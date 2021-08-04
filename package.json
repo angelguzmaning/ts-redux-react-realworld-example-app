@@ -12,6 +12,7 @@
     "@types/react": "^16.14.11",
     "@types/react-dom": "^16.9.14",
     "@types/react-redux": "^7.1.18",
+    "ramda": "^0.27.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
@@ -19,10 +20,13 @@
     "typescript": "^4.1.6"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prettier:check": "prettier --check src",
+    "prettier": "prettier --write src",
+    "lint": "eslint src"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -38,5 +42,25 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.28.5",
+    "@typescript-eslint/parser": "^4.28.5",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.32.0",
+    "prettier": "^2.3.2"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "!<rootDir>/src/index.tsx"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
   }
 }
