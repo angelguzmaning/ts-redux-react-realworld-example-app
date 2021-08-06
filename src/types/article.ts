@@ -37,7 +37,7 @@ export interface MultipleArticles {
   articlesCount: number;
 }
 
-export const multipleArticles: Decoder<MultipleArticles> = object({
+export const multipleArticlesDecoder: Decoder<MultipleArticles> = object({
   articles: array(articleDecoder),
   articlesCount: number,
 });
