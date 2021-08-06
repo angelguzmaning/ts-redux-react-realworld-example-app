@@ -18,12 +18,17 @@ export async function getTags(): Promise<{ tags: string[] }> {
 
 export async function login(email: string, password: string): Promise<Result<User, LoginError>> {
   try {
-    const { data } = await axios.post('login', { user: { email, password } });
+    const { data } = await axios.post('users/login', { user: { email, password } });
 
     return Ok(guard(object({ user: userDecoder }))(data).user);
   } catch ({ data }) {
     return Err(guard(object({ errors: loginErrorDecoder }))(data).errors);
   }
+}
+
+export async function getUser(): Promise<User> {
+  const { data } = await axios.get('user');
+  return guard(object({ user: userDecoder }))(data).user;
 }
 
 export async function favoriteArticle(slug: string): Promise<{ article: Article }> {

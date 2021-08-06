@@ -1,5 +1,5 @@
 import axios, { AxiosStatic } from 'axios';
-import { favoriteArticle, getArticles, getTags, login } from './conduit';
+import { favoriteArticle, getArticles, getTags, getUser, login } from './conduit';
 
 jest.mock('axios', () => {
   return {
@@ -137,4 +137,22 @@ it('Should return article on favorite', async () => {
 
   expect(mockedAxios.post.mock.calls.length).toBe(1);
   expect(result.article.slug).toMatch(defaultArticle.slug);
+});
+
+it('Should get user', async () => {
+  mockedAxios.get.mockResolvedValueOnce({
+    data: {
+      user: {
+        email: 'jake@jake.jake',
+        token: 'jwt.token.here',
+        username: 'jake',
+        bio: 'I work at statefarm',
+        image: null,
+      },
+    },
+  });
+
+  const user = await getUser();
+  expect(user).toHaveProperty('email', 'jake@jake.jake');
+  expect(user).toHaveProperty('token', 'jwt.token.here');
 });
