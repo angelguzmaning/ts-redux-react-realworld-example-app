@@ -36,6 +36,10 @@
     "prettier": "prettier --write src",
     "lint": "eslint src"
   },
+  "pre-commit": [
+    "prettier:check",
+    "lint"
+  ],
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -56,6 +60,7 @@
     "@typescript-eslint/parser": "^4.28.5",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
+    "pre-commit": "^1.2.2",
     "prettier": "^2.3.2"
   },
   "jest": {
