@@ -4,6 +4,7 @@ import { login } from '../../services/conduit';
 import { dispatchOnCall, store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
 import { LoginError } from '../../types/login';
+import { loadUser } from '../App/App.slice';
 import { initialize, startLoginIn, updateEmail, updateErrors, updatePassword } from './Login.slice';
 
 export function Login() {
@@ -87,6 +88,7 @@ async function signIn(ev: React.FormEvent) {
       location.hash = '#/';
       localStorage.setItem('token', user.token);
       axios.defaults.headers.Authorization = `Token ${user.token}`;
+      store.dispatch(loadUser(user));
     },
     err: (e) => {
       store.dispatch(updateErrors(e));

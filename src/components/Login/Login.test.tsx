@@ -4,6 +4,7 @@ import axios from 'axios';
 import { act } from 'react-dom/test-utils';
 import { login } from '../../services/conduit';
 import { store } from '../../state/store';
+import { logout } from '../App/App.slice';
 import { Login } from './Login';
 import { startLoginIn, updateEmail, updatePassword } from './Login.slice';
 
@@ -68,7 +69,7 @@ it('Should disable fields during login', async () => {
   expect(screen.getByPlaceholderText('Password')).toBeDisabled();
 });
 
-it('Should redirect to home if login is successful and setup auth', async () => {
+it('Should not try to login if it is already loging in', async () => {
   mockedLogin.mockResolvedValueOnce(
     Ok({
       email: 'jake@jake.jake',
@@ -90,7 +91,7 @@ it('Should redirect to home if login is successful and setup auth', async () => 
   mockedLogin.mockClear();
 });
 
-it('Should not try to login if it is already loging in', async () => {
+it('Should redirect to home if login is successful and setup auth', async () => {
   mockedLogin.mockResolvedValueOnce(
     Ok({
       email: 'jake@jake.jake',
@@ -103,10 +104,12 @@ it('Should not try to login if it is already loging in', async () => {
   render(<Login />);
 
   await act(async () => {
+    store.dispatch(logout());
     fireEvent.click(screen.getByRole('button'));
   });
 
   expect(location.hash).toMatch('#/');
   expect(localStorage.getItem('token')).toMatch('jwt.token.here');
   expect(axios.defaults.headers.Authorization).toMatch('Token jwt.token.here');
+  expect(store.getState().app.user.isSome()).toBe(true);
 });
