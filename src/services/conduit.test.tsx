@@ -1,5 +1,5 @@
 import axios, { AxiosStatic } from 'axios';
-import { getArticles, getTags } from './conduit';
+import { favoriteArticle, getArticles, getTags, login } from './conduit';
 
 jest.mock('axios', () => {
   return {
@@ -17,27 +17,28 @@ jest.mock('axios', () => {
 
 const mockedAxios = axios as jest.Mocked<AxiosStatic>;
 
+const defaultArticle = {
+  slug: 'how-to-train-your-dragon',
+  title: 'How to train your dragon',
+  description: 'Ever wonder how?',
+  body: 'It takes a Jacobian',
+  tagList: ['dragons', 'training'],
+  createdAt: '2016-02-18T03:22:56.637Z',
+  updatedAt: '2016-02-18T03:48:35.824Z',
+  favorited: false,
+  favoritesCount: 0,
+  author: {
+    username: 'jake',
+    bio: 'I work at statefarm',
+    image: 'https://i.stack.imgur.com/xHWG8.jpg',
+    following: false,
+  },
+};
 it('Should get articles', async () => {
   mockedAxios.get.mockResolvedValueOnce({
     data: {
       articles: [
-        {
-          slug: 'how-to-train-your-dragon',
-          title: 'How to train your dragon',
-          description: 'Ever wonder how?',
-          body: 'It takes a Jacobian',
-          tagList: ['dragons', 'training'],
-          createdAt: '2016-02-18T03:22:56.637Z',
-          updatedAt: '2016-02-18T03:48:35.824Z',
-          favorited: false,
-          favoritesCount: 0,
-          author: {
-            username: 'jake',
-            bio: 'I work at statefarm',
-            image: 'https://i.stack.imgur.com/xHWG8.jpg',
-            following: false,
-          },
-        },
+        defaultArticle,
         {
           slug: 'how-to-train-your-dragon-2',
           title: 'How to train your dragon 2',
@@ -75,4 +76,65 @@ it('Should get tags', async () => {
   const result = await getTags();
   expect(result.tags.length).toBe(2);
   expect(result.tags).toContain('angularjs');
+});
+
+it('Should send correct login object', async () => {
+  mockedAxios.post.mockRejectedValueOnce({ data: { errors: { x: ['y', 'z'] } } });
+
+  await login('thisIsUser', 'thisIsPassword');
+
+  const call = mockedAxios.post.mock.calls[0];
+
+  expect(call[1]).toHaveProperty('user');
+  expect(call[1].user).toHaveProperty('email', 'thisIsUser');
+  expect(call[1].user).toHaveProperty('password', 'thisIsPassword');
+});
+
+it('Should get login errors', async () => {
+  mockedAxios.post.mockRejectedValueOnce({ data: { errors: { x: ['y', 'z'] } } });
+
+  const result = await login('', '');
+  result.match({
+    ok: () => fail(),
+    err: (e) => {
+      expect(e).toHaveProperty('x');
+      expect(e['x']).toHaveLength(2);
+    },
+  });
+});
+
+it('Should get user on successful login', async () => {
+  mockedAxios.post.mockResolvedValueOnce({
+    data: {
+      user: {
+        email: 'jake@jake.jake',
+        token: 'jwt.token.here',
+        username: 'jake',
+        bio: 'I work at statefarm',
+        image: null,
+      },
+    },
+  });
+
+  const result = await login('', '');
+  result.match({
+    ok: (user) => {
+      expect(user).toHaveProperty('email', 'jake@jake.jake');
+      expect(user).toHaveProperty('token', 'jwt.token.here');
+    },
+    err: () => fail(),
+  });
+});
+
+it('Should return article on favorite', async () => {
+  mockedAxios.post.mockResolvedValueOnce({
+    data: {
+      article: { ...defaultArticle, favorited: true },
+    },
+  });
+
+  const result = await favoriteArticle(defaultArticle.slug);
+
+  expect(mockedAxios.post.mock.calls.length).toBe(1);
+  expect(result.article.slug).toMatch(defaultArticle.slug);
 });

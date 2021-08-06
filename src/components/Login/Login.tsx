@@ -1,0 +1,94 @@
+import axios from 'axios';
+import React, { useEffect } from 'react';
+import { login } from '../../services/conduit';
+import { dispatchOnCall, store } from '../../state/store';
+import { useStoreWithInitializer } from '../../state/storeHooks';
+import { LoginError } from '../../types/login';
+import { initialize, startLoginIn, updateEmail, updateErrors, updatePassword } from './Login.slice';
+
+export function Login() {
+  const { errors, loginIn } = useStoreWithInitializer(({ login }) => login, dispatchOnCall(initialize()));
+
+  return (
+    <div className='auth-page'>
+      <div className='container page'>
+        <div className='row'>
+          <div className='col-md-6 offset-md-3 col-xs-12'>
+            <h1 className='text-xs-center'>Sign in</h1>
+            <p className='text-xs-center'>
+              <a href=''>Need an account?</a>
+            </p>
+
+            {renderErrors(errors)}
+
+            <form onSubmit={signIn}>
+              <fieldset className='form-group'>
+                <input
+                  className='form-control form-control-lg'
+                  type='text'
+                  placeholder='Email'
+                  onChange={_updateEmail}
+                  disabled={loginIn}
+                />
+              </fieldset>
+              <fieldset className='form-group'>
+                <input
+                  className='form-control form-control-lg'
+                  type='password'
+                  placeholder='Password'
+                  onChange={_updatePassword}
+                  disabled={loginIn}
+                />
+              </fieldset>
+              <button className='btn btn-lg btn-primary pull-xs-right' type='submit'>
+                Sign in
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function renderErrors(errors: LoginError) {
+  return (
+    <ul className='error-messages'>
+      {Object.entries(errors).map(([field, fieldErrors]) =>
+        fieldErrors.map((fieldError) => (
+          <li key={field + fieldError}>
+            {field} {fieldError}
+          </li>
+        ))
+      )}
+    </ul>
+  );
+}
+
+function _updateEmail(ev: React.ChangeEvent<HTMLInputElement>) {
+  store.dispatch(updateEmail(ev.currentTarget.value));
+}
+
+function _updatePassword(ev: React.ChangeEvent<HTMLInputElement>) {
+  store.dispatch(updatePassword(ev.currentTarget.value));
+}
+
+async function signIn(ev: React.FormEvent) {
+  ev.preventDefault();
+
+  store.dispatch(startLoginIn());
+
+  const { email, password } = store.getState().login;
+  const result = await login(email, password);
+
+  result.match({
+    ok: (user) => {
+      location.hash = '#/';
+      localStorage.setItem('token', user.token);
+      axios.defaults.headers.Authorization = 'Token jwt.token.here';
+    },
+    err: (e) => {
+      store.dispatch(updateErrors(e));
+    },
+  });
+}

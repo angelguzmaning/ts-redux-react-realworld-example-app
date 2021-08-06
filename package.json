@@ -61,7 +61,8 @@
   "jest": {
     "clearMocks": true,
     "collectCoverageFrom": [
-      "!<rootDir>/src/index.tsx"
+      "!<rootDir>/src/index.tsx",
+      "!<rootDir>/src/helpers/testsHelpers.ts"
     ],
     "coverageThreshold": {
       "global": {
