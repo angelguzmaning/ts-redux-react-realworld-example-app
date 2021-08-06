@@ -13,7 +13,7 @@ const initialState: HomeState = {
 };
 
 const slice = createSlice({
-  name: 'game',
+  name: 'home',
   initialState,
   reducers: {
     startLoading: () => ({ articles: None, tags: None }),
