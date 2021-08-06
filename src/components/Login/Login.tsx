@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { login } from '../../services/conduit';
 import { dispatchOnCall, store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
@@ -76,6 +76,7 @@ function _updatePassword(ev: React.ChangeEvent<HTMLInputElement>) {
 async function signIn(ev: React.FormEvent) {
   ev.preventDefault();
 
+  if (store.getState().login.loginIn) return;
   store.dispatch(startLoginIn());
 
   const { email, password } = store.getState().login;
@@ -85,7 +86,7 @@ async function signIn(ev: React.FormEvent) {
     ok: (user) => {
       location.hash = '#/';
       localStorage.setItem('token', user.token);
-      axios.defaults.headers.Authorization = 'Token jwt.token.here';
+      axios.defaults.headers.Authorization = `Token ${user.token}`;
     },
     err: (e) => {
       store.dispatch(updateErrors(e));

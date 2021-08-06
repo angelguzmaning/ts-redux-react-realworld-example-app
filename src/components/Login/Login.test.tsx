@@ -82,6 +82,27 @@ it('Should redirect to home if login is successful and setup auth', async () => 
   render(<Login />);
 
   await act(async () => {
+    store.dispatch(startLoginIn());
+    fireEvent.click(screen.getByRole('button'));
+  });
+
+  expect(mockedLogin.mock.calls.length).toBe(0);
+  mockedLogin.mockClear();
+});
+
+it('Should not try to login if it is already loging in', async () => {
+  mockedLogin.mockResolvedValueOnce(
+    Ok({
+      email: 'jake@jake.jake',
+      token: 'jwt.token.here',
+      username: 'jake',
+      bio: 'I work at statefarm',
+      image: null,
+    })
+  );
+  render(<Login />);
+
+  await act(async () => {
     fireEvent.click(screen.getByRole('button'));
   });
 
