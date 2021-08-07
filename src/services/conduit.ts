@@ -31,6 +31,10 @@ export async function getUser(): Promise<User> {
   return guard(object({ user: userDecoder }))(data).user;
 }
 
-export async function favoriteArticle(slug: string): Promise<{ article: Article }> {
-  return guard(object({ article: articleDecoder }))((await axios.post(`articles/${slug}/favorite`)).data);
+export async function favoriteArticle(slug: string): Promise<Article> {
+  return guard(object({ article: articleDecoder }))((await axios.post(`articles/${slug}/favorite`)).data).article;
+}
+
+export async function unfavoriteArticle(slug: string): Promise<Article> {
+  return guard(object({ article: articleDecoder }))((await axios.delete(`articles/${slug}/favorite`)).data).article;
 }

@@ -20,13 +20,13 @@ const defaultArticle = {
 };
 
 it('Favorite button should be outlined if not favorited', () => {
-  render(<ArticlePreview article={defaultArticle} />);
+  render(<ArticlePreview article={defaultArticle} isSubmitting={false} />);
 
   expect(screen.getByRole('button').className.split(' ')).toContain('btn-outline-primary');
 });
 
 it('Favorite button should be primary if favorited', () => {
-  render(<ArticlePreview article={{ ...defaultArticle, favorited: true }} />);
+  render(<ArticlePreview article={{ ...defaultArticle, favorited: true }} isSubmitting={false} />);
 
   expect(screen.getByRole('button').className.split(' ')).toContain('btn-primary');
 });

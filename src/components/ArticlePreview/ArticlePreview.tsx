@@ -11,8 +11,12 @@ export function ArticlePreview({
     description,
     author: { image, username },
   },
+  isSubmitting,
+  onFavoriteToggle,
 }: {
   article: Article;
+  isSubmitting: boolean;
+  onFavoriteToggle?: () => void;
 }) {
   return (
     <div className='article-preview'>
@@ -26,7 +30,11 @@ export function ArticlePreview({
           </a>
           <span className='date'>{format(createdAt, 'PP')}</span>
         </div>
-        <button className={`btn btn-sm pull-xs-right ${favorited ? 'btn-primary' : 'btn-outline-primary'}`}>
+        <button
+          className={`btn btn-sm pull-xs-right ${favorited ? 'btn-primary' : 'btn-outline-primary'}`}
+          disabled={isSubmitting}
+          onClick={onFavoriteToggle}
+        >
           <i className='ion-heart'></i> {favoritesCount}
         </button>
       </div>

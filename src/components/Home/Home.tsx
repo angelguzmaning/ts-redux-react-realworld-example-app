@@ -1,10 +1,17 @@
 import { Option } from '@hqoss/monads';
-import { getArticles, getTags } from '../../services/conduit';
+import { favoriteArticle, getArticles, getTags, unfavoriteArticle } from '../../services/conduit';
 import { store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
 import { Article } from '../../types/article';
 import { ArticlePreview } from '../ArticlePreview/ArticlePreview';
-import { loadArticles, loadTags, startLoading } from './Home.slice';
+import {
+  endSubmittingFavorite,
+  HomeState,
+  loadArticles,
+  loadTags,
+  startLoading,
+  startSubmittingFavorite,
+} from './Home.slice';
 
 export function Home() {
   const { articles, tags } = useStoreWithInitializer(({ home }) => home, load);
@@ -56,11 +63,28 @@ function renderBanner() {
   );
 }
 
-function renderArticles(articles: Option<Article[]>) {
+function renderArticles(articles: HomeState['articles']) {
   return articles.match({
     none: () => [<span key={1}>Loading articles...</span>],
-    some: (articles) => articles.map((article) => <ArticlePreview key={article.slug} article={article} />),
+    some: (articles) =>
+      articles.map(({ article, isSubmitting }, index) => (
+        <ArticlePreview
+          key={article.slug}
+          article={article}
+          isSubmitting={isSubmitting}
+          onFavoriteToggle={isSubmitting ? undefined : onFavoriteToggle(index, article)}
+        />
+      )),
   });
+}
+
+function onFavoriteToggle(index: number, { slug, favorited }: Article) {
+  return async () => {
+    store.dispatch(startSubmittingFavorite(index));
+
+    const article = await (favorited ? unfavoriteArticle(slug) : favoriteArticle(slug));
+    store.dispatch(endSubmittingFavorite({ index, article }));
+  };
 }
 
 function renderSidebar(tags: Option<string[]>) {

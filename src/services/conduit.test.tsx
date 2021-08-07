@@ -1,5 +1,5 @@
 import axios, { AxiosStatic } from 'axios';
-import { favoriteArticle, getArticles, getTags, getUser, login } from './conduit';
+import { favoriteArticle, getArticles, getTags, getUser, login, unfavoriteArticle } from './conduit';
 
 jest.mock('axios', () => {
   return {
@@ -136,7 +136,20 @@ it('Should return article on favorite', async () => {
   const result = await favoriteArticle(defaultArticle.slug);
 
   expect(mockedAxios.post.mock.calls.length).toBe(1);
-  expect(result.article.slug).toMatch(defaultArticle.slug);
+  expect(result.slug).toMatch(defaultArticle.slug);
+});
+
+it('Should return article on unfavorite', async () => {
+  mockedAxios.delete.mockResolvedValueOnce({
+    data: {
+      article: { ...defaultArticle, favorited: true },
+    },
+  });
+
+  const result = await unfavoriteArticle(defaultArticle.slug);
+
+  expect(mockedAxios.delete.mock.calls.length).toBe(1);
+  expect(result.slug).toMatch(defaultArticle.slug);
 });
 
 it('Should get user', async () => {
