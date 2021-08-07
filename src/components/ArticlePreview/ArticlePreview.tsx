@@ -4,6 +4,7 @@ import { Article } from '../../types/article';
 export function ArticlePreview({
   article: {
     createdAt,
+    favorited,
     favoritesCount,
     slug,
     title,
@@ -25,7 +26,7 @@ export function ArticlePreview({
           </a>
           <span className='date'>{format(createdAt, 'PP')}</span>
         </div>
-        <button className='btn btn-outline-primary btn-sm pull-xs-right'>
+        <button className={`btn btn-sm pull-xs-right ${favorited ? 'btn-primary' : 'btn-outline-primary'}`}>
           <i className='ion-heart'></i> {favoritesCount}
         </button>
       </div>
