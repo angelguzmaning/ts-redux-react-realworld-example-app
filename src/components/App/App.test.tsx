@@ -4,6 +4,7 @@ import { getArticles, getTags, getUser } from '../../services/conduit';
 import { store } from '../../state/store';
 import { MultipleArticles } from '../../types/article';
 import { App } from './App';
+import { initialize } from './App.slice';
 
 jest.mock('../../services/conduit', () => ({
   getArticles: jest.fn((): MultipleArticles => ({ articles: [], articlesCount: 0 })),
@@ -18,6 +19,9 @@ const mockedGetTags = getTags as jest.Mock<ReturnType<typeof getTags>>;
 const mockedGetUser = getUser as jest.Mock<ReturnType<typeof getUser>>;
 
 it('Should render home', async () => {
+  act(() => {
+    store.dispatch(initialize());
+  });
   mockedGetArticles.mockImplementationOnce(async () => ({
     articles: [],
     articlesCount: 0,
@@ -36,6 +40,9 @@ it('Should render home', async () => {
 });
 
 it('Should get user if token is on storage', async () => {
+  act(() => {
+    store.dispatch(initialize());
+  });
   mockedGetUser.mockResolvedValueOnce({
     email: 'jake@jake.jake',
     token: 'my-token',
@@ -61,4 +68,5 @@ it('Should get user if token is on storage', async () => {
   const user = optionUser.unwrap();
   expect(user).toHaveProperty('email', 'jake@jake.jake');
   expect(user).toHaveProperty('token', 'my-token');
+  expect(store.getState().app.loading).toBe(false);
 });

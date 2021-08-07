@@ -1,38 +1,40 @@
 import axios from 'axios';
-import { useEffect } from 'react';
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { getUser } from '../../services/conduit';
 import { store } from '../../state/store';
+import { useStoreWithInitializer } from '../../state/storeHooks';
 import { Home } from '../Home/Home';
 import { Login } from '../Login/Login';
-import { loadUser } from './App.slice';
+import { endLoad, loadUser } from './App.slice';
 
 export function App() {
-  useEffect(() => {
-    loadUserIfItIsLogged();
-  }, [null]);
+  const { loading } = useStoreWithInitializer(({ app }) => app, load);
 
   return (
     <HashRouter>
-      <Switch>
-        <Route exact path='/login'>
-          <Login />
-        </Route>
-        <Route exact path='/'>
-          <Home />
-        </Route>
-        <Route path='*'>
-          <Redirect to='/' />
-        </Route>
-      </Switch>
+      {!loading && (
+        <Switch>
+          <Route exact path='/login'>
+            <Login />
+          </Route>
+          <Route exact path='/'>
+            <Home />
+          </Route>
+          <Route path='*'>
+            <Redirect to='/' />
+          </Route>
+        </Switch>
+      )}
     </HashRouter>
   );
 }
 
-async function loadUserIfItIsLogged() {
+async function load() {
   const token = localStorage.getItem('token');
-  if (store.getState().app.user.isNone() && token) {
-    axios.defaults.headers.Authorization = `Token ${token}`;
-    store.dispatch(loadUser(await getUser()));
+  if (!store.getState().app.loading || !token) {
+    store.dispatch(endLoad());
+    return;
   }
+  axios.defaults.headers.Authorization = `Token ${token}`;
+  store.dispatch(loadUser(await getUser()));
 }
