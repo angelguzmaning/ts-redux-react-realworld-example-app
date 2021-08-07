@@ -32,6 +32,20 @@ it('Should change password', async () => {
   expect(store.getState().login.password).toMatch('test pass');
 });
 
+it('Should have email and password values from store', async () => {
+  await act(async () => {
+    await render(<Login />);
+  });
+
+  await act(async () => {
+    store.dispatch(updateEmail('1234'));
+    store.dispatch(updatePassword('5678'));
+  });
+
+  expect(screen.getByPlaceholderText('Email')).toHaveValue('1234');
+  expect(screen.getByPlaceholderText('Password')).toHaveValue('5678');
+});
+
 it('Should initialize on first render', async () => {
   await act(async () => {
     store.dispatch(updateEmail('1234'));

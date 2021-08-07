@@ -5,10 +5,14 @@ import { dispatchOnCall, store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
 import { LoginError } from '../../types/login';
 import { loadUser } from '../App/App.slice';
+import { FormGroup } from '../FormGroup/FormGroup';
 import { initialize, startLoginIn, updateEmail, updateErrors, updatePassword } from './Login.slice';
 
 export function Login() {
-  const { errors, loginIn } = useStoreWithInitializer(({ login }) => login, dispatchOnCall(initialize()));
+  const { errors, loginIn, email, password } = useStoreWithInitializer(
+    ({ login }) => login,
+    dispatchOnCall(initialize())
+  );
 
   return (
     <div className='auth-page'>
@@ -23,24 +27,14 @@ export function Login() {
             {renderErrors(errors)}
 
             <form onSubmit={signIn}>
-              <fieldset className='form-group'>
-                <input
-                  className='form-control form-control-lg'
-                  type='text'
-                  placeholder='Email'
-                  onChange={_updateEmail}
-                  disabled={loginIn}
-                />
-              </fieldset>
-              <fieldset className='form-group'>
-                <input
-                  className='form-control form-control-lg'
-                  type='password'
-                  placeholder='Password'
-                  onChange={_updatePassword}
-                  disabled={loginIn}
-                />
-              </fieldset>
+              <FormGroup type='text' placeholder='Email' onChange={_updateEmail} disabled={loginIn} value={email} />
+              <FormGroup
+                type='password'
+                placeholder='Password'
+                onChange={_updatePassword}
+                disabled={loginIn}
+                value={password}
+              />
               <button className='btn btn-lg btn-primary pull-xs-right' type='submit'>
                 Sign in
               </button>
