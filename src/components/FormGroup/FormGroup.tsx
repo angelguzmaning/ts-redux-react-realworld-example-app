@@ -11,3 +11,18 @@ export function FormGroup(props: {
     </fieldset>
   );
 }
+
+export function TextAreaFormGroup(props: {
+  type: string;
+  placeholder: string;
+  disabled: boolean;
+  rows: number;
+  value: string;
+  onChange: (ev: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}) {
+  return (
+    <fieldset className='form-group'>
+      <textarea className='form-control form-control-lg' {...props}></textarea>
+    </fieldset>
+  );
+}

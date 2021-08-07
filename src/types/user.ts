@@ -18,3 +18,8 @@ export const userDecoder: Decoder<User> = object({
   bio: nullable(string),
   image: nullable(string),
 });
+
+export interface UserSettings extends PublicUser {
+  email: string;
+  password: string | null;
+}

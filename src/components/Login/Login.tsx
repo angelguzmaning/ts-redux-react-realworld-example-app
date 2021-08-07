@@ -3,8 +3,8 @@ import React from 'react';
 import { login } from '../../services/conduit';
 import { dispatchOnCall, store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
-import { LoginError } from '../../types/login';
 import { loadUser } from '../App/App.slice';
+import { Errors } from '../Errors/Errors';
 import { FormGroup } from '../FormGroup/FormGroup';
 import { initialize, startLoginIn, updateEmail, updateErrors, updatePassword } from './Login.slice';
 
@@ -24,7 +24,7 @@ export function Login() {
               <a href='/#/register'>Need an account?</a>
             </p>
 
-            {renderErrors(errors)}
+            <Errors errors={errors} />
 
             <form onSubmit={signIn}>
               <FormGroup type='text' placeholder='Email' onChange={_updateEmail} disabled={loginIn} value={email} />
@@ -43,20 +43,6 @@ export function Login() {
         </div>
       </div>
     </div>
-  );
-}
-
-function renderErrors(errors: LoginError) {
-  return (
-    <ul className='error-messages'>
-      {Object.entries(errors).map(([field, fieldErrors]) =>
-        fieldErrors.map((fieldError) => (
-          <li key={field + fieldError}>
-            {field} {fieldError}
-          </li>
-        ))
-      )}
-    </ul>
   );
 }
 

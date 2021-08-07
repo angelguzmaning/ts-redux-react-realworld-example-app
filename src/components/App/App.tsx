@@ -5,10 +5,13 @@ import { store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
 import { Home } from '../Home/Home';
 import { Login } from '../Login/Login';
+import { Settings } from '../Settings/Settings';
 import { endLoad, loadUser } from './App.slice';
 
 export function App() {
-  const { loading } = useStoreWithInitializer(({ app }) => app, load);
+  const { loading, user } = useStoreWithInitializer(({ app }) => app, load);
+
+  const userIsLogged = user.isSome();
 
   return (
     <HashRouter>
@@ -16,6 +19,11 @@ export function App() {
         <Switch>
           <Route exact path='/login'>
             <Login />
+            {userIsLogged && <Redirect to='/' />}
+          </Route>
+          <Route exact path='/settings'>
+            <Settings />
+            {!userIsLogged && <Redirect to='/' />}
           </Route>
           <Route exact path='/'>
             <Home />

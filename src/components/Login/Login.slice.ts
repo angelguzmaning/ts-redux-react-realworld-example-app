@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { LoginError } from '../../types/login';
+import { GenericErrors } from '../../types/error';
 
 export interface LoginState {
   email: string;
   password: string;
-  errors: LoginError;
+  errors: GenericErrors;
   loginIn: boolean;
 }
 
@@ -26,7 +26,7 @@ const slice = createSlice({
     updatePassword: (state, { payload: password }: PayloadAction<string>) => {
       state.password = password;
     },
-    updateErrors: (state, { payload: errors }: PayloadAction<LoginError>) => {
+    updateErrors: (state, { payload: errors }: PayloadAction<GenericErrors>) => {
       state.errors = errors;
       state.loginIn = false;
     },
