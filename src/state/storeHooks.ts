@@ -10,3 +10,7 @@ export function useStoreWithInitializer<T>(getter: (state: State) => T, initiali
   }, [null]);
   return state;
 }
+
+export function useStore<T>(getter: (state: State) => T) {
+  return useStoreWithInitializer(getter, () => {});
+}
