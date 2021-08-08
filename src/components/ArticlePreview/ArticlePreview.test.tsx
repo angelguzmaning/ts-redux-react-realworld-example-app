@@ -14,7 +14,7 @@ const defaultArticle = {
   favorited: false,
   favoritesCount: 0,
   slug: 'test-pmy91z',
-  tagList: [],
+  tagList: ['tag1', 'tag2'],
   title: 'Test',
   updatedAt: new Date(),
 };
@@ -29,4 +29,11 @@ it('Favorite button should be primary if favorited', () => {
   render(<ArticlePreview article={{ ...defaultArticle, favorited: true }} isSubmitting={false} />);
 
   expect(screen.getByRole('button').className.split(' ')).toContain('btn-primary');
+});
+
+it('Should display tags', () => {
+  render(<ArticlePreview article={defaultArticle} isSubmitting={false} />);
+
+  expect(screen.getByText('tag1')).toBeInTheDocument();
+  expect(screen.getByText('tag2')).toBeInTheDocument();
 });

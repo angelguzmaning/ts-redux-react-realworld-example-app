@@ -9,6 +9,7 @@ export function ArticlePreview({
     slug,
     title,
     description,
+    tagList,
     author: { image, username },
   },
   isSubmitting,
@@ -42,7 +43,20 @@ export function ArticlePreview({
         <h1>{title}</h1>
         <p>{description}</p>
         <span>Read more...</span>
+        <TagList tagList={tagList} />
       </a>
     </div>
+  );
+}
+
+function TagList({ tagList }: { tagList: string[] }) {
+  return (
+    <ul className='tag-list'>
+      {tagList.map((tag) => (
+        <li key={tag} className='tag-default tag-pill tag-outline'>
+          {tag}
+        </li>
+      ))}
+    </ul>
   );
 }
