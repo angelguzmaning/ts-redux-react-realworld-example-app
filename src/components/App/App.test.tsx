@@ -2,16 +2,10 @@ import { act, render, screen } from '@testing-library/react';
 import axios from 'axios';
 import { getArticles, getTags, getUser } from '../../services/conduit';
 import { store } from '../../state/store';
-import { MultipleArticles } from '../../types/article';
 import { App } from './App';
 import { initialize } from './App.slice';
 
-jest.mock('../../services/conduit', () => ({
-  getArticles: jest.fn((): MultipleArticles => ({ articles: [], articlesCount: 0 })),
-  getTags: jest.fn((): { tags: string[] } => ({ tags: [] })),
-  getUser: jest.fn(),
-}));
-
+jest.mock('../../services/conduit');
 jest.mock('axios');
 
 const mockedGetArticles = getArticles as jest.Mock<ReturnType<typeof getArticles>>;

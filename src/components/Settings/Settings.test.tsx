@@ -7,10 +7,7 @@ import { Err, Ok } from '@hqoss/monads';
 import axios from 'axios';
 import { loadUser } from '../App/App.slice';
 
-jest.mock('../../services/conduit.ts', () => ({
-  updateSettings: jest.fn(),
-}));
-
+jest.mock('../../services/conduit.ts');
 jest.mock('axios');
 
 const mockedUpdateSettings = updateSettings as jest.Mock<ReturnType<typeof updateSettings>>;

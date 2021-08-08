@@ -8,10 +8,7 @@ import { logout } from '../App/App.slice';
 import { Login } from './Login';
 import { startLoginIn, updateField } from './Login.slice';
 
-jest.mock('../../services/conduit', () => ({
-  login: jest.fn(),
-}));
-
+jest.mock('../../services/conduit');
 jest.mock('axios');
 
 const mockedLogin = login as jest.Mock<ReturnType<typeof login>>;

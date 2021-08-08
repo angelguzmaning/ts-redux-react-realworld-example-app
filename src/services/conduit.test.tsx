@@ -10,19 +10,7 @@ import {
   updateSettings,
 } from './conduit';
 
-jest.mock('axios', () => {
-  return {
-    create: jest.fn(),
-    post: jest.fn(() => {}),
-    put: jest.fn(),
-    defaults: {
-      baseUrl: '',
-      headers: {},
-    },
-    get: jest.fn(),
-    delete: jest.fn(),
-  };
-});
+jest.mock('axios');
 
 const mockedAxios = axios as jest.Mocked<AxiosStatic>;
 
