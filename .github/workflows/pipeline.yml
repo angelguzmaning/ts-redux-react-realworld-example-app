@@ -1,0 +1,76 @@
+name: Pipeline
+on: push
+
+jobs:
+  code-style:
+    name: Code Style
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Initialize
+      run: npm ci
+      
+    - name: Lint
+      run: npm run lint
+      
+    - name: Prettier
+      run: npm run prettier:check
+      
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Initialize
+      run: npm ci
+      
+    - name: Test
+      run: npm run test -- --coverage
+      
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Initialize
+      run: npm ci
+      
+    - name: Build
+      run: npm run build
