@@ -80,6 +80,10 @@ function renderArticles(articles: HomeState['articles']) {
 
 function onFavoriteToggle(index: number, { slug, favorited }: Article) {
   return async () => {
+    if (store.getState().app.user.isNone()) {
+      location.hash = '#/login';
+      return;
+    }
     store.dispatch(startSubmittingFavorite(index));
 
     const article = await (favorited ? unfavoriteArticle(slug) : favoriteArticle(slug));

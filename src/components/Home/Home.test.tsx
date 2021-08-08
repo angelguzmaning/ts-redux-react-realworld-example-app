@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { favoriteArticle, getArticles, getTags, unfavoriteArticle } from '../../services/conduit';
 import { store } from '../../state/store';
+import { initialize, loadUser } from '../App/App.slice';
 import { Home } from './Home';
 
 jest.mock('../../services/conduit');
@@ -52,6 +53,29 @@ it('Should load articles', async () => {
   screen.getByText('Test 2');
 });
 
+it('Should redirect to login on favorite if the user is not logged in', async () => {
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [defaultArticle],
+    articlesCount: 0,
+  });
+  mockedGetTags.mockResolvedValueOnce({ tags: [] });
+  mockedFavoriteArticle.mockResolvedValueOnce({ ...defaultArticle, favorited: true });
+
+  await act(async () => {
+    store.dispatch(initialize());
+    await render(<Home />);
+  });
+
+  await act(async () => {
+    fireEvent.click(screen.getByRole('button'));
+    expect(store.getState().home.articles.unwrap()[0].isSubmitting).toBe(false);
+  });
+
+  expect(mockedFavoriteArticle.mock.calls.length).toBe(0);
+  mockedFavoriteArticle.mockClear();
+  expect(location.hash).toMatch('#/login');
+});
+
 it('Should favorite article', async () => {
   mockedGetArticles.mockResolvedValueOnce({
     articles: [defaultArticle],
@@ -61,6 +85,15 @@ it('Should favorite article', async () => {
   mockedFavoriteArticle.mockResolvedValueOnce({ ...defaultArticle, favorited: true });
 
   await act(async () => {
+    store.dispatch(
+      loadUser({
+        email: 'jake@jake.jake',
+        token: 'jwt.token.here',
+        username: 'jake',
+        bio: 'I work at statefarm',
+        image: null,
+      })
+    );
     await render(<Home />);
   });
 
@@ -82,6 +115,15 @@ it('Should unfavorite article', async () => {
   mockedUnfavoriteArticle.mockResolvedValueOnce({ ...defaultArticle, favorited: false });
 
   await act(async () => {
+    store.dispatch(
+      loadUser({
+        email: 'jake@jake.jake',
+        token: 'jwt.token.here',
+        username: 'jake',
+        bio: 'I work at statefarm',
+        image: null,
+      })
+    );
     await render(<Home />);
   });
 
