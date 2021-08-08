@@ -6,7 +6,7 @@ import { login } from '../../services/conduit';
 import { store } from '../../state/store';
 import { logout } from '../App/App.slice';
 import { Login } from './Login';
-import { startLoginIn, updateEmail, updatePassword } from './Login.slice';
+import { startLoginIn, updateField } from './Login.slice';
 
 jest.mock('../../services/conduit', () => ({
   login: jest.fn(),
@@ -23,13 +23,13 @@ it('Should render', () => {
 it('Should change email', () => {
   const { getByPlaceholderText } = render(<Login />);
   fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'test' } });
-  expect(store.getState().login.email).toMatch('test');
+  expect(store.getState().login.user.email).toMatch('test');
 });
 
 it('Should change password', async () => {
   render(<Login />);
   fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'test pass' } });
-  expect(store.getState().login.password).toMatch('test pass');
+  expect(store.getState().login.user.password).toMatch('test pass');
 });
 
 it('Should have email and password values from store', async () => {
@@ -38,8 +38,8 @@ it('Should have email and password values from store', async () => {
   });
 
   await act(async () => {
-    store.dispatch(updateEmail('1234'));
-    store.dispatch(updatePassword('5678'));
+    store.dispatch(updateField({ name: 'email', value: '1234' }));
+    store.dispatch(updateField({ name: 'password', value: '5678' }));
   });
 
   expect(screen.getByPlaceholderText('Email')).toHaveValue('1234');
@@ -48,13 +48,13 @@ it('Should have email and password values from store', async () => {
 
 it('Should initialize on first render', async () => {
   await act(async () => {
-    store.dispatch(updateEmail('1234'));
-    store.dispatch(updatePassword('34145'));
+    store.dispatch(updateField({ name: 'email', value: '1234' }));
+    store.dispatch(updateField({ name: 'password', value: '34145' }));
     await render(<Login />);
   });
 
-  expect(store.getState().login.email.length).toBe(0);
-  expect(store.getState().login.password.length).toBe(0);
+  expect(store.getState().login.user.email.length).toBe(0);
+  expect(store.getState().login.user.password.length).toBe(0);
 });
 
 it('Should show errors if login fails and stop disabling the fields', async () => {

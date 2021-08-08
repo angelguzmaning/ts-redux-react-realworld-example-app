@@ -2,15 +2,19 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { GenericErrors } from '../../types/error';
 
 export interface LoginState {
-  email: string;
-  password: string;
+  user: {
+    email: string;
+    password: string;
+  };
   errors: GenericErrors;
   loginIn: boolean;
 }
 
 const initialState: LoginState = {
-  email: '',
-  password: '',
+  user: {
+    email: '',
+    password: '',
+  },
   errors: {},
   loginIn: false,
 };
@@ -20,11 +24,11 @@ const slice = createSlice({
   initialState,
   reducers: {
     initialize: () => initialState,
-    updateEmail: (state, { payload: email }: PayloadAction<string>) => {
-      state.email = email;
-    },
-    updatePassword: (state, { payload: password }: PayloadAction<string>) => {
-      state.password = password;
+    updateField: (
+      state,
+      { payload: { name, value } }: PayloadAction<{ name: keyof LoginState['user']; value: string }>
+    ) => {
+      state.user[name] = value;
     },
     updateErrors: (state, { payload: errors }: PayloadAction<GenericErrors>) => {
       state.errors = errors;
@@ -36,6 +40,6 @@ const slice = createSlice({
   },
 });
 
-export const { initialize, updateEmail, updatePassword, updateErrors, startLoginIn } = slice.actions;
+export const { initialize, updateField, updateErrors, startLoginIn } = slice.actions;
 
 export default slice.reducer;

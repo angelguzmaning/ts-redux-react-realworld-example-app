@@ -93,7 +93,7 @@ it('Should redirect to home if settings update succeeds', async () => {
     fireEvent.click(screen.getByText('Update Settings'));
   });
 
-  expect(location.hash).toMatch('/#/');
+  expect(location.hash).toMatch('#/');
   expect(store.getState().app.user.unwrap().email).toMatch('jake@jake.jakesettings');
 });
 

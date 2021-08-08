@@ -3,16 +3,13 @@ import React from 'react';
 import { login } from '../../services/conduit';
 import { dispatchOnCall, store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
+import { buildUserFormField } from '../../types/userFormField';
 import { loadUser } from '../App/App.slice';
-import { Errors } from '../Errors/Errors';
-import { FormGroup } from '../FormGroup/FormGroup';
-import { initialize, startLoginIn, updateEmail, updateErrors, updatePassword } from './Login.slice';
+import { UserForm } from '../UserForm/UserForm';
+import { initialize, LoginState, startLoginIn, updateErrors, updateField } from './Login.slice';
 
 export function Login() {
-  const { errors, loginIn, email, password } = useStoreWithInitializer(
-    ({ login }) => login,
-    dispatchOnCall(initialize())
-  );
+  const { errors, loginIn, user } = useStoreWithInitializer(({ login }) => login, dispatchOnCall(initialize()));
 
   return (
     <div className='auth-page'>
@@ -24,21 +21,18 @@ export function Login() {
               <a href='/#/register'>Need an account?</a>
             </p>
 
-            <Errors errors={errors} />
-
-            <form onSubmit={signIn}>
-              <FormGroup type='text' placeholder='Email' onChange={_updateEmail} disabled={loginIn} value={email} />
-              <FormGroup
-                type='password'
-                placeholder='Password'
-                onChange={_updatePassword}
-                disabled={loginIn}
-                value={password}
-              />
-              <button className='btn btn-lg btn-primary pull-xs-right' type='submit'>
-                Sign in
-              </button>
-            </form>
+            <UserForm
+              disabled={loginIn}
+              formObject={user}
+              submitButtonText='Sign in'
+              errors={errors}
+              onChange={_updateField}
+              onSubmit={signIn}
+              fields={[
+                buildUserFormField({ name: 'email', placeholder: 'Email' }),
+                buildUserFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
+              ]}
+            />
           </div>
         </div>
       </div>
@@ -46,12 +40,8 @@ export function Login() {
   );
 }
 
-function _updateEmail(ev: React.ChangeEvent<HTMLInputElement>) {
-  store.dispatch(updateEmail(ev.currentTarget.value));
-}
-
-function _updatePassword(ev: React.ChangeEvent<HTMLInputElement>) {
-  store.dispatch(updatePassword(ev.currentTarget.value));
+function _updateField(name: string, value: string) {
+  store.dispatch(updateField({ name: name as keyof LoginState['user'], value }));
 }
 
 async function signIn(ev: React.FormEvent) {
@@ -60,7 +50,7 @@ async function signIn(ev: React.FormEvent) {
   if (store.getState().login.loginIn) return;
   store.dispatch(startLoginIn());
 
-  const { email, password } = store.getState().login;
+  const { email, password } = store.getState().login.user;
   const result = await login(email, password);
 
   result.match({
