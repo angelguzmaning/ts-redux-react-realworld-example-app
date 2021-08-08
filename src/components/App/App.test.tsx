@@ -22,11 +22,11 @@ it('Should render home', async () => {
   act(() => {
     store.dispatch(initialize());
   });
-  mockedGetArticles.mockImplementationOnce(async () => ({
+  mockedGetArticles.mockResolvedValueOnce({
     articles: [],
     articlesCount: 0,
-  }));
-  mockedGetTags.mockImplementationOnce(async () => ({ tags: [] }));
+  });
+  mockedGetTags.mockResolvedValueOnce({ tags: [] });
   mockedGetUser.mockImplementationOnce(jest.fn());
   localStorage.clear();
 
@@ -50,11 +50,11 @@ it('Should get user if token is on storage', async () => {
     bio: 'I work at statefarm',
     image: null,
   });
-  mockedGetArticles.mockImplementationOnce(async () => ({
+  mockedGetArticles.mockResolvedValueOnce({
     articles: [],
     articlesCount: 0,
-  }));
-  mockedGetTags.mockImplementationOnce(async () => ({ tags: [] }));
+  });
+  mockedGetTags.mockResolvedValueOnce({ tags: [] });
   localStorage.setItem('token', 'my-token');
 
   await act(async () => {

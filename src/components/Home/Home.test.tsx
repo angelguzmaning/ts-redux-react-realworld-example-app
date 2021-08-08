@@ -35,7 +35,7 @@ const defaultArticle = {
 };
 
 it('Should load articles', async () => {
-  mockedGetArticles.mockImplementationOnce(async () => ({
+  mockedGetArticles.mockResolvedValueOnce({
     articles: [
       defaultArticle,
       {
@@ -46,8 +46,8 @@ it('Should load articles', async () => {
       },
     ],
     articlesCount: 0,
-  }));
-  mockedGetTags.mockImplementationOnce(async () => ({ tags: ['twitter', 'facebook', 'google'] }));
+  });
+  mockedGetTags.mockResolvedValueOnce({ tags: ['twitter', 'facebook', 'google'] });
 
   await act(async () => {
     await render(<Home />);
@@ -59,11 +59,11 @@ it('Should load articles', async () => {
 });
 
 it('Should favorite article', async () => {
-  mockedGetArticles.mockImplementationOnce(async () => ({
+  mockedGetArticles.mockResolvedValueOnce({
     articles: [defaultArticle],
     articlesCount: 0,
-  }));
-  mockedGetTags.mockImplementationOnce(async () => ({ tags: [] }));
+  });
+  mockedGetTags.mockResolvedValueOnce({ tags: [] });
   mockedFavoriteArticle.mockResolvedValueOnce({ ...defaultArticle, favorited: true });
 
   await act(async () => {
@@ -80,11 +80,11 @@ it('Should favorite article', async () => {
 });
 
 it('Should unfavorite article', async () => {
-  mockedGetArticles.mockImplementationOnce(async () => ({
+  mockedGetArticles.mockResolvedValueOnce({
     articles: [{ ...defaultArticle, favorited: true }],
     articlesCount: 0,
-  }));
-  mockedGetTags.mockImplementationOnce(async () => ({ tags: [] }));
+  });
+  mockedGetTags.mockResolvedValueOnce({ tags: [] });
   mockedUnfavoriteArticle.mockResolvedValueOnce({ ...defaultArticle, favorited: false });
 
   await act(async () => {
