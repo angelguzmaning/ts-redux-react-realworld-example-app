@@ -5,6 +5,7 @@ import { store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
 import { Home } from '../Home/Home';
 import { Login } from '../Login/Login';
+import { Register } from '../Register/Register';
 import { Settings } from '../Settings/Settings';
 import { endLoad, loadUser } from './App.slice';
 
@@ -19,6 +20,10 @@ export function App() {
         <Switch>
           <Route exact path='/login'>
             <Login />
+            {userIsLogged && <Redirect to='/' />}
+          </Route>
+          <Route exact path='/register'>
+            <Register />
             {userIsLogged && <Redirect to='/' />}
           </Route>
           <Route exact path='/settings'>

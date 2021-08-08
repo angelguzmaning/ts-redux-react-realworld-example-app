@@ -4,7 +4,7 @@ import { array, guard, object, string } from 'decoders';
 import settings from '../config/settings';
 import { Article, articleDecoder, MultipleArticles, multipleArticlesDecoder } from '../types/article';
 import { GenericErrors, genericErrorsDecoder } from '../types/error';
-import { User, userDecoder, UserSettings } from '../types/user';
+import { User, userDecoder, UserForRegistration, UserSettings } from '../types/user';
 
 axios.defaults.baseURL = settings.baseApiUrl;
 
@@ -45,6 +45,16 @@ export async function updateSettings(user: UserSettings): Promise<Result<User, G
 
     return Ok(guard(object({ user: userDecoder }))(data).user);
   } catch ({ data }) {
+    return Err(guard(object({ errors: genericErrorsDecoder }))(data).errors);
+  }
+}
+
+export async function signUp(user: UserForRegistration): Promise<Result<User, GenericErrors>> {
+  try {
+    const { data } = await axios.post('users', { user });
+
+    return Ok(guard(object({ user: userDecoder }))(data).user);
+  } catch ({ response: { data } }) {
     return Err(guard(object({ errors: genericErrorsDecoder }))(data).errors);
   }
 }

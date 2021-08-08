@@ -1,5 +1,14 @@
 import axios, { AxiosStatic } from 'axios';
-import { favoriteArticle, getArticles, getTags, getUser, login, unfavoriteArticle, updateSettings } from './conduit';
+import {
+  favoriteArticle,
+  getArticles,
+  getTags,
+  getUser,
+  login,
+  signUp,
+  unfavoriteArticle,
+  updateSettings,
+} from './conduit';
 
 jest.mock('axios', () => {
   return {
@@ -197,6 +206,42 @@ it('Should get user on successful settings update', async () => {
   });
 
   const result = await updateSettings({ email: '', password: '', bio: '', image: null, username: '' });
+  result.match({
+    ok: (user) => {
+      expect(user).toHaveProperty('email', 'jake@jake.jake');
+      expect(user).toHaveProperty('token', 'jwt.token.here');
+    },
+    err: () => fail(),
+  });
+});
+
+it('Should get signUp errors', async () => {
+  mockedAxios.post.mockRejectedValueOnce({ response: { data: { errors: { x: ['y', 'z'] } } } });
+
+  const result = await signUp({ email: '', password: '', username: '' });
+  result.match({
+    ok: () => fail(),
+    err: (e) => {
+      expect(e).toHaveProperty('x');
+      expect(e['x']).toHaveLength(2);
+    },
+  });
+});
+
+it('Should get user on successful signup', async () => {
+  mockedAxios.post.mockResolvedValueOnce({
+    data: {
+      user: {
+        email: 'jake@jake.jake',
+        token: 'jwt.token.here',
+        username: 'jake',
+        bio: 'I work at statefarm',
+        image: null,
+      },
+    },
+  });
+
+  const result = await signUp({ email: '', password: '', username: '' });
   result.match({
     ok: (user) => {
       expect(user).toHaveProperty('email', 'jake@jake.jake');

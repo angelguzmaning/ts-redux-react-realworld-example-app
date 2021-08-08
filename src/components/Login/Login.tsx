@@ -1,10 +1,9 @@
-import axios from 'axios';
 import React from 'react';
 import { login } from '../../services/conduit';
 import { dispatchOnCall, store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
+import { loadUserIntoApp } from '../../types/user';
 import { buildUserFormField } from '../../types/userFormField';
-import { loadUser } from '../App/App.slice';
 import { UserForm } from '../UserForm/UserForm';
 import { initialize, LoginState, startLoginIn, updateErrors, updateField } from './Login.slice';
 
@@ -56,9 +55,7 @@ async function signIn(ev: React.FormEvent) {
   result.match({
     ok: (user) => {
       location.hash = '#/';
-      localStorage.setItem('token', user.token);
-      axios.defaults.headers.Authorization = `Token ${user.token}`;
-      store.dispatch(loadUser(user));
+      loadUserIntoApp(user);
     },
     err: (e) => {
       store.dispatch(updateErrors(e));
