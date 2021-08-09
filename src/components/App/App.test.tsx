@@ -64,3 +64,23 @@ it('Should get user if token is on storage', async () => {
   expect(user).toHaveProperty('token', 'my-token');
   expect(store.getState().app.loading).toBe(false);
 });
+
+it('Should end load if get user fails', async () => {
+  act(() => {
+    store.dispatch(initialize());
+  });
+  mockedGetUser.mockRejectedValueOnce({});
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [],
+    articlesCount: 0,
+  });
+  mockedGetTags.mockResolvedValueOnce({ tags: [] });
+  localStorage.setItem('token', 'my-token');
+
+  await act(async () => {
+    await render(<App />);
+  });
+
+  expect(store.getState().app.user.isNone()).toBeTruthy();
+  expect(store.getState().app.loading).toBe(false);
+});
