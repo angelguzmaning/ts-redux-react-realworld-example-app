@@ -1,9 +1,12 @@
 import axios from 'axios';
+import { Fragment } from 'react';
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { getUser } from '../../services/conduit';
 import { store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
 import { EditArticle } from '../EditArticle/EditArticle';
+import { Footer } from '../Footer/Footer';
+import { Header } from '../Header/Header';
 import { Home } from '../Home/Home';
 import { Login } from '../Login/Login';
 import { NewArticle } from '../NewArticle/NewArticle';
@@ -19,34 +22,38 @@ export function App() {
   return (
     <HashRouter>
       {!loading && (
-        <Switch>
-          <Route exact path='/login'>
-            <Login />
-            {userIsLogged && <Redirect to='/' />}
-          </Route>
-          <Route exact path='/register'>
-            <Register />
-            {userIsLogged && <Redirect to='/' />}
-          </Route>
-          <Route exact path='/settings'>
-            <Settings />
-            {!userIsLogged && <Redirect to='/' />}
-          </Route>
-          <Route exact path='/editor'>
-            <NewArticle />
-            {!userIsLogged && <Redirect to='/' />}
-          </Route>
-          <Route exact path='/editor/:slug'>
-            <EditArticle />
-            {!userIsLogged && <Redirect to='/' />}
-          </Route>
-          <Route exact path='/'>
-            <Home />
-          </Route>
-          <Route path='*'>
-            <Redirect to='/' />
-          </Route>
-        </Switch>
+        <Fragment>
+          <Header />
+          <Switch>
+            <Route exact path='/login'>
+              <Login />
+              {userIsLogged && <Redirect to='/' />}
+            </Route>
+            <Route exact path='/register'>
+              <Register />
+              {userIsLogged && <Redirect to='/' />}
+            </Route>
+            <Route exact path='/settings'>
+              <Settings />
+              {!userIsLogged && <Redirect to='/' />}
+            </Route>
+            <Route exact path='/editor'>
+              <NewArticle />
+              {!userIsLogged && <Redirect to='/' />}
+            </Route>
+            <Route exact path='/editor/:slug'>
+              <EditArticle />
+              {!userIsLogged && <Redirect to='/' />}
+            </Route>
+            <Route exact path='/'>
+              <Home />
+            </Route>
+            <Route path='*'>
+              <Redirect to='/' />
+            </Route>
+          </Switch>
+          <Footer />
+        </Fragment>
       )}
     </HashRouter>
   );
