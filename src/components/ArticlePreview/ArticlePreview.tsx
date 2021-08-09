@@ -33,6 +33,7 @@ export function ArticlePreview({
         </div>
         <button
           className={`btn btn-sm pull-xs-right ${favorited ? 'btn-primary' : 'btn-outline-primary'}`}
+          aria-label='Toggle Favorite'
           disabled={isSubmitting}
           onClick={onFavoriteToggle}
         >
