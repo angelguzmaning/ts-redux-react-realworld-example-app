@@ -40,7 +40,7 @@ export const GenericForm: FC<GenericFormProps> = ({
               type={field.type}
               placeholder={field.placeholder}
               value={formObject[field.name] || ''}
-              onChange={_updateField(field.name, onChange)}
+              onChange={onUpdateField(field.name, onChange)}
               lg={field.lg}
             />
           ) : field.fieldType === 'textarea' ? (
@@ -51,7 +51,7 @@ export const GenericForm: FC<GenericFormProps> = ({
               placeholder={field.placeholder}
               value={formObject[field.name] || ''}
               rows={field.rows as number}
-              onChange={_updateField(field.name, onChange)}
+              onChange={onUpdateField(field.name, onChange)}
               lg={field.lg}
             />
           ) : (
@@ -61,7 +61,7 @@ export const GenericForm: FC<GenericFormProps> = ({
               type={field.type}
               placeholder={field.placeholder}
               value={formObject[field.name] || ''}
-              onChange={_updateField(field.name, onChange)}
+              onChange={onUpdateField(field.name, onChange)}
               listValue={formObject[field.listName as string] as unknown as string[]}
               onEnter={() => onAddItemToList && field.listName && onAddItemToList(field.listName)}
               onRemoveItem={(index) => onRemoveListItem && field.listName && onRemoveListItem(field.listName, index)}
@@ -75,7 +75,7 @@ export const GenericForm: FC<GenericFormProps> = ({
   </Fragment>
 );
 
-function _updateField(
+function onUpdateField(
   name: string,
   onChange: GenericFormProps['onChange']
 ): (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void {

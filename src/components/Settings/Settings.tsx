@@ -31,8 +31,8 @@ export function Settings() {
               formObject={{ ...user }}
               submitButtonText='Update Settings'
               errors={errors}
-              onChange={_updateField}
-              onSubmit={_updateSettings(user)}
+              onChange={onUpdateField}
+              onSubmit={onUpdateSettings(user)}
               fields={[
                 buildGenericFormField({ name: 'image', placeholder: 'URL of profile picture' }),
                 buildGenericFormField({ name: 'username', placeholder: 'Your Name' }),
@@ -58,11 +58,11 @@ export function Settings() {
   );
 }
 
-function _updateField(name: string, value: string) {
+function onUpdateField(name: string, value: string) {
   store.dispatch(updateField({ name: name as keyof SettingsState['user'], value }));
 }
 
-function _updateSettings(user: UserSettings) {
+function onUpdateSettings(user: UserSettings) {
   return async (ev: React.FormEvent) => {
     ev.preventDefault();
     store.dispatch(startUpdate());

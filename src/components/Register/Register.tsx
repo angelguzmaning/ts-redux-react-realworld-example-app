@@ -24,8 +24,8 @@ export function Register() {
               formObject={user as unknown as Record<string, string>}
               submitButtonText='Sign up'
               errors={errors}
-              onChange={_updateField}
-              onSubmit={_signUp(user)}
+              onChange={onUpdateField}
+              onSubmit={onSignUp(user)}
               fields={[
                 buildGenericFormField({ name: 'username', placeholder: 'Username' }),
                 buildGenericFormField({ name: 'email', placeholder: 'Email' }),
@@ -39,11 +39,11 @@ export function Register() {
   );
 }
 
-function _updateField(name: string, value: string) {
+function onUpdateField(name: string, value: string) {
   store.dispatch(updateField({ name: name as keyof RegisterState['user'], value }));
 }
 
-function _signUp(user: UserForRegistration) {
+function onSignUp(user: UserForRegistration) {
   return async (ev: React.FormEvent) => {
     ev.preventDefault();
     store.dispatch(startSigningUp());

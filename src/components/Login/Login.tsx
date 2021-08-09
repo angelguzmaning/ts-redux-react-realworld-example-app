@@ -25,7 +25,7 @@ export function Login() {
               formObject={user}
               submitButtonText='Sign in'
               errors={errors}
-              onChange={_updateField}
+              onChange={onUpdateField}
               onSubmit={signIn}
               fields={[
                 buildGenericFormField({ name: 'email', placeholder: 'Email' }),
@@ -39,7 +39,7 @@ export function Login() {
   );
 }
 
-function _updateField(name: string, value: string) {
+function onUpdateField(name: string, value: string) {
   store.dispatch(updateField({ name: name as keyof LoginState['user'], value }));
 }
 

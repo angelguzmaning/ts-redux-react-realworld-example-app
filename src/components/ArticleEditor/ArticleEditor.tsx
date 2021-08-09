@@ -17,7 +17,7 @@ export function ArticleEditor({ onSubmit }: { onSubmit: (ev: React.FormEvent) =>
               formObject={{ ...article, tag } as unknown as Record<string, string | null>}
               disabled={submitting}
               errors={errors}
-              onChange={_updateField}
+              onChange={onUpdateField}
               onSubmit={onSubmit}
               submitButtonText='Publish Article'
               onAddItemToList={onAddTag}
@@ -48,7 +48,7 @@ export function ArticleEditor({ onSubmit }: { onSubmit: (ev: React.FormEvent) =>
   );
 }
 
-function _updateField(name: string, value: string) {
+function onUpdateField(name: string, value: string) {
   store.dispatch(updateField({ name: name as keyof EditorState['article'], value }));
 }
 
