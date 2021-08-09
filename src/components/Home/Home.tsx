@@ -4,7 +4,9 @@ import { store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
 import { Article } from '../../types/article';
 import { ArticlePreview } from '../ArticlePreview/ArticlePreview';
+import { Pagination } from '../Pagination/Pagination';
 import {
+  changePage,
   endSubmittingFavorite,
   HomeState,
   loadArticles,
@@ -14,7 +16,7 @@ import {
 } from './Home.slice';
 
 export function Home() {
-  const { articles, tags } = useStoreWithInitializer(({ home }) => home, load);
+  const { articles, tags, articlesCount, currentPage } = useStoreWithInitializer(({ home }) => home, load);
 
   return (
     <div className='home-page'>
@@ -33,6 +35,8 @@ export function Home() {
             </div>
 
             {renderArticles(articles)}
+
+            <Pagination currentPage={currentPage} count={articlesCount} itemsPerPage={10} onPageChange={onPageChange} />
           </div>
 
           <div className='col-md-3'>{renderSidebar(tags)}</div>
@@ -46,7 +50,7 @@ async function load() {
   store.dispatch(startLoading());
 
   const multipleArticles = await getArticles();
-  store.dispatch(loadArticles(multipleArticles.articles));
+  store.dispatch(loadArticles(multipleArticles));
 
   const tagsResult = await getTags();
   store.dispatch(loadTags(tagsResult.tags));
@@ -65,7 +69,11 @@ function renderBanner() {
 
 function renderArticles(articles: HomeState['articles']) {
   return articles.match({
-    none: () => [<span key={1}>Loading articles...</span>],
+    none: () => [
+      <div className='article-preview' key={1}>
+        Loading articles...
+      </div>,
+    ],
     some: (articles) =>
       articles.map(({ article, isSubmitting }, index) => (
         <ArticlePreview
@@ -89,6 +97,13 @@ function onFavoriteToggle(index: number, { slug, favorited }: Article) {
     const article = await (favorited ? unfavoriteArticle(slug) : favoriteArticle(slug));
     store.dispatch(endSubmittingFavorite({ index, article }));
   };
+}
+
+async function onPageChange(index: number) {
+  store.dispatch(changePage(index));
+
+  const multipleArticles = await getArticles((index - 1) * 10);
+  store.dispatch(loadArticles(multipleArticles));
 }
 
 function renderSidebar(tags: Option<string[]>) {

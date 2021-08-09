@@ -1,6 +1,6 @@
 import { None, Option, Some } from '@hqoss/monads';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Article } from '../../types/article';
+import { Article, MultipleArticles } from '../../types/article';
 import * as R from 'ramda';
 
 export interface HomeArticle {
@@ -11,20 +11,25 @@ export interface HomeArticle {
 export interface HomeState {
   articles: Option<readonly HomeArticle[]>;
   tags: Option<string[]>;
+  currentPage: number;
+  articlesCount: number;
 }
 
 const initialState: HomeState = {
   articles: None,
   tags: None,
+  currentPage: 1,
+  articlesCount: 0,
 };
 
 const slice = createSlice({
   name: 'home',
   initialState,
   reducers: {
-    startLoading: () => ({ articles: None, tags: None }),
-    loadArticles: (state, { payload: articles }: PayloadAction<Article[]>) => {
+    startLoading: () => initialState,
+    loadArticles: (state, { payload: { articles, articlesCount } }: PayloadAction<MultipleArticles>) => {
       state.articles = Some(articles.map((article) => ({ article, isSubmitting: false })));
+      state.articlesCount = articlesCount;
     },
     loadTags: (state, { payload: tags }: PayloadAction<string[]>) => {
       state.tags = Some(tags);
@@ -38,9 +43,14 @@ const slice = createSlice({
     ) => {
       state.articles = state.articles.map(R.update<HomeArticle>(index, { article, isSubmitting: false }));
     },
+    changePage: (state, { payload: page }: PayloadAction<number>) => {
+      state.currentPage = page;
+      state.articles = None;
+    },
   },
 });
 
-export const { startLoading, loadArticles, loadTags, startSubmittingFavorite, endSubmittingFavorite } = slice.actions;
+export const { startLoading, loadArticles, loadTags, startSubmittingFavorite, endSubmittingFavorite, changePage } =
+  slice.actions;
 
 export default slice.reducer;

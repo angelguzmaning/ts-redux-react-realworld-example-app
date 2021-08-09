@@ -8,8 +8,8 @@ import { User, userDecoder, UserForRegistration, UserSettings } from '../types/u
 
 axios.defaults.baseURL = settings.baseApiUrl;
 
-export async function getArticles(): Promise<MultipleArticles> {
-  return guard(multipleArticlesDecoder)((await axios.get('articles?limit=10')).data);
+export async function getArticles(offSet = 0): Promise<MultipleArticles> {
+  return guard(multipleArticlesDecoder)((await axios.get(`articles?limit=10&offset=${offSet}`)).data);
 }
 
 export async function getTags(): Promise<{ tags: string[] }> {

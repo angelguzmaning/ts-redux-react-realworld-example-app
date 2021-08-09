@@ -135,3 +135,29 @@ it('Should unfavorite article', async () => {
   expect(store.getState().home.articles.unwrap()[0].isSubmitting).toBe(false);
   expect(store.getState().home.articles.unwrap()[0].article.favorited).toBe(false);
 });
+
+it('Should load another page', async () => {
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [defaultArticle],
+    articlesCount: 100,
+  });
+  mockedGetTags.mockResolvedValueOnce({ tags: [] });
+
+  await act(async () => {
+    store.dispatch(initialize());
+    await render(<Home />);
+  });
+
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, title: 'After change' }],
+    articlesCount: 100,
+  });
+
+  await act(async () => {
+    fireEvent.click(screen.getByLabelText(/Go to page number 5/));
+  });
+
+  expect(store.getState().home.currentPage).toBe(5);
+  expect(screen.getByText('After change')).toBeInTheDocument();
+  expect(mockedGetArticles.mock.calls[1][0]).toBe(40);
+});
