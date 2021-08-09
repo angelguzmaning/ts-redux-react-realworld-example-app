@@ -1,6 +1,6 @@
 import { None, Option, Some } from '@hqoss/monads';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Article, MultipleArticles } from '../../types/article';
+import { Article, MultipleArticles } from '../../../types/article';
 import * as R from 'ramda';
 
 export interface HomeArticle {

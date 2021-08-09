@@ -1,10 +1,10 @@
 import { Option } from '@hqoss/monads';
-import { favoriteArticle, getArticles, getTags, unfavoriteArticle } from '../../services/conduit';
-import { store } from '../../state/store';
-import { useStoreWithInitializer } from '../../state/storeHooks';
-import { Article } from '../../types/article';
-import { ArticlePreview } from '../ArticlePreview/ArticlePreview';
-import { Pagination } from '../Pagination/Pagination';
+import { favoriteArticle, getArticles, getTags, unfavoriteArticle } from '../../../services/conduit';
+import { store } from '../../../state/store';
+import { useStoreWithInitializer } from '../../../state/storeHooks';
+import { Article } from '../../../types/article';
+import { ArticlePreview } from '../../ArticlePreview/ArticlePreview';
+import { Pagination } from '../../Pagination/Pagination';
 import {
   changePage,
   endSubmittingFavorite,

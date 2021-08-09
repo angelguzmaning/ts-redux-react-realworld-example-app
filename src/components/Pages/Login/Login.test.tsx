@@ -2,13 +2,13 @@ import { Err, Ok } from '@hqoss/monads';
 import { fireEvent, render, screen } from '@testing-library/react';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
-import { login } from '../../services/conduit';
-import { store } from '../../state/store';
-import { logout } from '../App/App.slice';
+import { login } from '../../../services/conduit';
+import { store } from '../../../state/store';
+import { logout } from '../../App/App.slice';
 import { Login } from './Login';
 import { startLoginIn, updateField } from './Login.slice';
 
-jest.mock('../../services/conduit');
+jest.mock('../../../services/conduit');
 jest.mock('axios');
 
 const mockedLogin = login as jest.Mock<ReturnType<typeof login>>;

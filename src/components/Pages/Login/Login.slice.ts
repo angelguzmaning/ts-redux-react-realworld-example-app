@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GenericErrors } from '../../types/error';
+import { GenericErrors } from '../../../types/error';
 
 export interface LoginState {
   user: {

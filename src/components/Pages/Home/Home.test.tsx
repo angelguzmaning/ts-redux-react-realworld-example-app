@@ -1,10 +1,10 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { favoriteArticle, getArticles, getTags, unfavoriteArticle } from '../../services/conduit';
-import { store } from '../../state/store';
-import { initialize, loadUser } from '../App/App.slice';
+import { favoriteArticle, getArticles, getTags, unfavoriteArticle } from '../../../services/conduit';
+import { store } from '../../../state/store';
+import { initialize, loadUser } from '../../App/App.slice';
 import { Home } from './Home';
 
-jest.mock('../../services/conduit');
+jest.mock('../../../services/conduit');
 
 const mockedGetArticles = getArticles as jest.Mock<ReturnType<typeof getArticles>>;
 const mockedGetTags = getTags as jest.Mock<ReturnType<typeof getTags>>;

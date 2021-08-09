@@ -1,10 +1,10 @@
-import { dispatchOnCall, store } from '../../state/store';
-import { useStoreWithInitializer } from '../../state/storeHooks';
-import { buildGenericFormField } from '../../types/genericFormField';
-import { GenericForm } from '../GenericForm/GenericForm';
+import { dispatchOnCall, store } from '../../../state/store';
+import { useStoreWithInitializer } from '../../../state/storeHooks';
+import { buildGenericFormField } from '../../../types/genericFormField';
+import { GenericForm } from '../../GenericForm/GenericForm';
 import { initialize, RegisterState, startSigningUp, updateErrors, updateField } from './Register.slice';
-import { loadUserIntoApp, UserForRegistration } from '../../types/user';
-import { signUp } from '../../services/conduit';
+import { loadUserIntoApp, UserForRegistration } from '../../../types/user';
+import { signUp } from '../../../services/conduit';
 
 export function Register() {
   const { errors, signingUp, user } = useStoreWithInitializer(({ register }) => register, dispatchOnCall(initialize()));

@@ -1,8 +1,8 @@
 import { FormEvent, useEffect } from 'react';
-import { createArticle } from '../../services/conduit';
-import { store } from '../../state/store';
-import { ArticleEditor } from '../ArticleEditor/ArticleEditor';
-import { initialize, startSubmitting, updateErrors } from '../ArticleEditor/ArticleEditor.slice';
+import { createArticle } from '../../../services/conduit';
+import { store } from '../../../state/store';
+import { ArticleEditor } from '../../ArticleEditor/ArticleEditor';
+import { initialize, startSubmitting, updateErrors } from '../../ArticleEditor/ArticleEditor.slice';
 
 export function NewArticle() {
   useEffect(() => {

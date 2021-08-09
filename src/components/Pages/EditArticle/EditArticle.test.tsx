@@ -2,13 +2,13 @@ import { Err, Ok } from '@hqoss/monads';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
-import { getArticle, updateArticle } from '../../services/conduit';
-import { store } from '../../state/store';
-import { loadUser } from '../App/App.slice';
-import { initialize } from '../ArticleEditor/ArticleEditor.slice';
+import { getArticle, updateArticle } from '../../../services/conduit';
+import { store } from '../../../state/store';
+import { loadUser } from '../../App/App.slice';
+import { initialize } from '../../ArticleEditor/ArticleEditor.slice';
 import { EditArticle } from './EditArticle';
 
-jest.mock('../../services/conduit.ts');
+jest.mock('../../../services/conduit.ts');
 
 const mockedGetArticle = getArticle as jest.Mock<ReturnType<typeof getArticle>>;
 const mockedUpdateArticle = updateArticle as jest.Mock<ReturnType<typeof updateArticle>>;

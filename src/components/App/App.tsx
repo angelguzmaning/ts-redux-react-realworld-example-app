@@ -4,14 +4,14 @@ import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { getUser } from '../../services/conduit';
 import { store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
-import { EditArticle } from '../EditArticle/EditArticle';
+import { EditArticle } from '../Pages/EditArticle/EditArticle';
 import { Footer } from '../Footer/Footer';
 import { Header } from '../Header/Header';
-import { Home } from '../Home/Home';
-import { Login } from '../Login/Login';
-import { NewArticle } from '../NewArticle/NewArticle';
-import { Register } from '../Register/Register';
-import { Settings } from '../Settings/Settings';
+import { Home } from '../Pages/Home/Home';
+import { Login } from '../Pages/Login/Login';
+import { NewArticle } from '../Pages/NewArticle/NewArticle';
+import { Register } from '../Pages/Register/Register';
+import { Settings } from '../Pages/Settings/Settings';
 import { endLoad, loadUser } from './App.slice';
 
 export function App() {

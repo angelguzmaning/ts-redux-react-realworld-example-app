@@ -1,10 +1,10 @@
 import React from 'react';
-import { login } from '../../services/conduit';
-import { dispatchOnCall, store } from '../../state/store';
-import { useStoreWithInitializer } from '../../state/storeHooks';
-import { loadUserIntoApp } from '../../types/user';
-import { buildGenericFormField } from '../../types/genericFormField';
-import { GenericForm } from '../GenericForm/GenericForm';
+import { login } from '../../../services/conduit';
+import { dispatchOnCall, store } from '../../../state/store';
+import { useStoreWithInitializer } from '../../../state/storeHooks';
+import { loadUserIntoApp } from '../../../types/user';
+import { buildGenericFormField } from '../../../types/genericFormField';
+import { GenericForm } from '../../GenericForm/GenericForm';
 import { initialize, LoginState, startLoginIn, updateErrors, updateField } from './Login.slice';
 
 export function Login() {

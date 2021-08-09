@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User, UserSettings } from '../../types/user';
-import { loadUser, logout } from '../App/App.slice';
+import { User, UserSettings } from '../../../types/user';
+import { loadUser, logout } from '../../App/App.slice';
 import * as R from 'ramda';
-import { GenericErrors } from '../../types/error';
+import { GenericErrors } from '../../../types/error';
 
 export interface SettingsState {
   user: UserSettings;

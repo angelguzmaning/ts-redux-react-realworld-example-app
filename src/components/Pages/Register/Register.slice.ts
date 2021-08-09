@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GenericErrors } from '../../types/error';
-import { UserForRegistration } from '../../types/user';
+import { GenericErrors } from '../../../types/error';
+import { UserForRegistration } from '../../../types/user';
 
 export interface RegisterState {
   user: UserForRegistration;

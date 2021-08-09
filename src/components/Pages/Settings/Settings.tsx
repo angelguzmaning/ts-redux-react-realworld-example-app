@@ -1,12 +1,12 @@
 import axios from 'axios';
 import React from 'react';
-import { updateSettings } from '../../services/conduit';
-import { store } from '../../state/store';
-import { useStore } from '../../state/storeHooks';
-import { UserSettings } from '../../types/user';
-import { buildGenericFormField } from '../../types/genericFormField';
-import { loadUser, logout } from '../App/App.slice';
-import { GenericForm } from '../GenericForm/GenericForm';
+import { updateSettings } from '../../../services/conduit';
+import { store } from '../../../state/store';
+import { useStore } from '../../../state/storeHooks';
+import { UserSettings } from '../../../types/user';
+import { buildGenericFormField } from '../../../types/genericFormField';
+import { loadUser, logout } from '../../App/App.slice';
+import { GenericForm } from '../../GenericForm/GenericForm';
 import { SettingsState, startUpdate, updateErrors, updateField } from './Settings.slice';
 
 export interface SettingsField {

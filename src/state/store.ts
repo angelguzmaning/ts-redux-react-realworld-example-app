@@ -1,15 +1,15 @@
 import { Action, configureStore } from '@reduxjs/toolkit';
-import home from '../components/Home/Home.slice';
-import login from '../components/Login/Login.slice';
 import app from '../components/App/App.slice';
-import settings from '../components/Settings/Settings.slice';
-import register from '../components/Register/Register.slice';
+import home from '../components/Pages/Home/Home.slice';
+import login from '../components/Pages/Login/Login.slice';
+import settings from '../components/Pages/Settings/Settings.slice';
+import register from '../components/Pages/Register/Register.slice';
 import editor from '../components/ArticleEditor/ArticleEditor.slice';
 
 const middlewareConfiguration = { serializableCheck: false };
 
 export const store = configureStore({
-  reducer: { home, login, app, settings, register, editor },
+  reducer: { app, home, login, settings, register, editor },
   devTools: {
     name: 'Conduit',
   },
