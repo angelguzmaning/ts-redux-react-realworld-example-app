@@ -3,8 +3,10 @@ import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { getUser } from '../../services/conduit';
 import { store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
+import { EditArticle } from '../EditArticle/EditArticle';
 import { Home } from '../Home/Home';
 import { Login } from '../Login/Login';
+import { NewArticle } from '../NewArticle/NewArticle';
 import { Register } from '../Register/Register';
 import { Settings } from '../Settings/Settings';
 import { endLoad, loadUser } from './App.slice';
@@ -28,6 +30,14 @@ export function App() {
           </Route>
           <Route exact path='/settings'>
             <Settings />
+            {!userIsLogged && <Redirect to='/' />}
+          </Route>
+          <Route exact path='/editor'>
+            <NewArticle />
+            {!userIsLogged && <Redirect to='/' />}
+          </Route>
+          <Route exact path='/editor/:slug'>
+            <EditArticle />
             {!userIsLogged && <Redirect to='/' />}
           </Route>
           <Route exact path='/'>

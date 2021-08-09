@@ -3,8 +3,8 @@ import { login } from '../../services/conduit';
 import { dispatchOnCall, store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
 import { loadUserIntoApp } from '../../types/user';
-import { buildUserFormField } from '../../types/userFormField';
-import { UserForm } from '../UserForm/UserForm';
+import { buildGenericFormField } from '../../types/genericFormField';
+import { GenericForm } from '../GenericForm/GenericForm';
 import { initialize, LoginState, startLoginIn, updateErrors, updateField } from './Login.slice';
 
 export function Login() {
@@ -20,7 +20,7 @@ export function Login() {
               <a href='/#/register'>Need an account?</a>
             </p>
 
-            <UserForm
+            <GenericForm
               disabled={loginIn}
               formObject={user}
               submitButtonText='Sign in'
@@ -28,8 +28,8 @@ export function Login() {
               onChange={_updateField}
               onSubmit={signIn}
               fields={[
-                buildUserFormField({ name: 'email', placeholder: 'Email' }),
-                buildUserFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
+                buildGenericFormField({ name: 'email', placeholder: 'Email' }),
+                buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
               ]}
             />
           </div>

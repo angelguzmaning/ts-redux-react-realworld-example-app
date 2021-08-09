@@ -4,9 +4,9 @@ import { updateSettings } from '../../services/conduit';
 import { store } from '../../state/store';
 import { useStore } from '../../state/storeHooks';
 import { UserSettings } from '../../types/user';
-import { buildUserFormField } from '../../types/userFormField';
+import { buildGenericFormField } from '../../types/genericFormField';
 import { loadUser, logout } from '../App/App.slice';
-import { UserForm } from '../UserForm/UserForm';
+import { GenericForm } from '../GenericForm/GenericForm';
 import { SettingsState, startUpdate, updateErrors, updateField } from './Settings.slice';
 
 export interface SettingsField {
@@ -26,7 +26,7 @@ export function Settings() {
           <div className='col-md-6 offset-md-3 col-xs-12'>
             <h1 className='text-xs-center'>Your Settings</h1>
 
-            <UserForm
+            <GenericForm
               disabled={updating}
               formObject={{ ...user }}
               submitButtonText='Update Settings'
@@ -34,11 +34,16 @@ export function Settings() {
               onChange={_updateField}
               onSubmit={_updateSettings(user)}
               fields={[
-                buildUserFormField({ name: 'image', placeholder: 'URL of profile picture' }),
-                buildUserFormField({ name: 'username', placeholder: 'Your Name' }),
-                buildUserFormField({ name: 'bio', placeholder: 'Short bio about you', rows: 8, fieldType: 'texarea' }),
-                buildUserFormField({ name: 'email', placeholder: 'Email' }),
-                buildUserFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
+                buildGenericFormField({ name: 'image', placeholder: 'URL of profile picture' }),
+                buildGenericFormField({ name: 'username', placeholder: 'Your Name' }),
+                buildGenericFormField({
+                  name: 'bio',
+                  placeholder: 'Short bio about you',
+                  rows: 8,
+                  fieldType: 'textarea',
+                }),
+                buildGenericFormField({ name: 'email', placeholder: 'Email' }),
+                buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
               ]}
             />
 

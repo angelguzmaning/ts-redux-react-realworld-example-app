@@ -1,7 +1,7 @@
 import { dispatchOnCall, store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
-import { buildUserFormField } from '../../types/userFormField';
-import { UserForm } from '../UserForm/UserForm';
+import { buildGenericFormField } from '../../types/genericFormField';
+import { GenericForm } from '../GenericForm/GenericForm';
 import { initialize, RegisterState, startSigningUp, updateErrors, updateField } from './Register.slice';
 import { loadUserIntoApp, UserForRegistration } from '../../types/user';
 import { signUp } from '../../services/conduit';
@@ -19,7 +19,7 @@ export function Register() {
               <a href='/#/login'>Have an account?</a>
             </p>
 
-            <UserForm
+            <GenericForm
               disabled={signingUp}
               formObject={user as unknown as Record<string, string>}
               submitButtonText='Sign up'
@@ -27,9 +27,9 @@ export function Register() {
               onChange={_updateField}
               onSubmit={_signUp(user)}
               fields={[
-                buildUserFormField({ name: 'username', placeholder: 'Username' }),
-                buildUserFormField({ name: 'email', placeholder: 'Email' }),
-                buildUserFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
+                buildGenericFormField({ name: 'username', placeholder: 'Username' }),
+                buildGenericFormField({ name: 'email', placeholder: 'Email' }),
+                buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
               ]}
             />
           </div>

@@ -41,3 +41,10 @@ export const multipleArticlesDecoder: Decoder<MultipleArticles> = object({
   articles: array(articleDecoder),
   articlesCount: number,
 });
+
+export interface ArticleForEditor {
+  title: string;
+  description: string;
+  body: string;
+  tagList: string[];
+}

@@ -1,12 +1,15 @@
 import axios, { AxiosStatic } from 'axios';
 import {
+  createArticle,
   favoriteArticle,
+  getArticle,
   getArticles,
   getTags,
   getUser,
   login,
   signUp,
   unfavoriteArticle,
+  updateArticle,
   updateSettings,
 } from './conduit';
 
@@ -237,4 +240,65 @@ it('Should get user on successful signup', async () => {
     },
     err: () => fail(),
   });
+});
+
+it('Should get errors on unsuccessful article creation', async () => {
+  mockedAxios.post.mockRejectedValueOnce({ response: { data: { errors: { x: ['y', 'z'] } } } });
+
+  const result = await createArticle({ title: '', body: '', description: '', tagList: [] });
+  result.match({
+    ok: () => fail(),
+    err: (e) => {
+      expect(e).toHaveProperty('x');
+      expect(e['x']).toHaveLength(2);
+    },
+  });
+});
+
+it('Should get article on successful article creation', async () => {
+  mockedAxios.post.mockResolvedValueOnce({
+    data: {
+      article: defaultArticle,
+    },
+  });
+
+  const result = await createArticle({ title: '', body: '', description: '', tagList: [] });
+  expect(result.isOk()).toBeTruthy();
+  expect(result.unwrap().slug).toMatch(defaultArticle.slug);
+});
+
+it('Should get article', async () => {
+  mockedAxios.get.mockResolvedValueOnce({
+    data: {
+      article: defaultArticle,
+    },
+  });
+
+  const article = await getArticle('');
+  expect(article.slug).toMatch(defaultArticle.slug);
+});
+
+it('Should get errors on unsuccessful article update', async () => {
+  mockedAxios.put.mockRejectedValueOnce({ response: { data: { errors: { x: ['y', 'z'] } } } });
+
+  const result = await updateArticle('', { title: '', body: '', description: '', tagList: [] });
+  result.match({
+    ok: () => fail(),
+    err: (e) => {
+      expect(e).toHaveProperty('x');
+      expect(e['x']).toHaveLength(2);
+    },
+  });
+});
+
+it('Should get article on successful article creation', async () => {
+  mockedAxios.put.mockResolvedValueOnce({
+    data: {
+      article: defaultArticle,
+    },
+  });
+
+  const result = await updateArticle('', { title: '', body: '', description: '', tagList: [] });
+  expect(result.isOk()).toBeTruthy();
+  expect(result.unwrap().slug).toMatch(defaultArticle.slug);
 });
