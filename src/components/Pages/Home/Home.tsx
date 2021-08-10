@@ -50,7 +50,7 @@ function renderBanner() {
 async function onPageChange(index: number) {
   store.dispatch(changePage(index));
 
-  const multipleArticles = await getArticles((index - 1) * 10);
+  const multipleArticles = await getArticles({ offset: (index - 1) * 10 });
   store.dispatch(loadArticles(multipleArticles));
 }
 

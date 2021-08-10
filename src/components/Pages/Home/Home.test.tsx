@@ -159,5 +159,5 @@ it('Should load another page', async () => {
 
   expect(store.getState().articleViewer.currentPage).toBe(5);
   expect(screen.getByText('After change')).toBeInTheDocument();
-  expect(mockedGetArticles.mock.calls[1][0]).toBe(40);
+  expect(mockedGetArticles.mock.calls[1][0]).toHaveProperty('offset', 40);
 });

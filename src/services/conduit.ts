@@ -2,15 +2,28 @@ import { Err, Ok, Result } from '@hqoss/monads';
 import axios from 'axios';
 import { array, guard, object, string } from 'decoders';
 import settings from '../config/settings';
-import { Article, articleDecoder, ArticleForEditor, MultipleArticles, multipleArticlesDecoder } from '../types/article';
+import {
+  Article,
+  articleDecoder,
+  ArticleForEditor,
+  ArticlesFilters,
+  MultipleArticles,
+  multipleArticlesDecoder,
+} from '../types/article';
 import { GenericErrors, genericErrorsDecoder } from '../types/error';
+import { objectToQueryString } from '../types/object';
 import { Profile, profileDecoder } from '../types/profile';
 import { User, userDecoder, UserForRegistration, UserSettings } from '../types/user';
 
 axios.defaults.baseURL = settings.baseApiUrl;
 
-export async function getArticles(offSet = 0): Promise<MultipleArticles> {
-  return guard(multipleArticlesDecoder)((await axios.get(`articles?limit=10&offset=${offSet}`)).data);
+export async function getArticles(filters: ArticlesFilters = {}): Promise<MultipleArticles> {
+  const finalFilters: ArticlesFilters = {
+    limit: 10,
+    offset: 0,
+    ...filters,
+  };
+  return guard(multipleArticlesDecoder)((await axios.get(`articles?${objectToQueryString(finalFilters)}`)).data);
 }
 
 export async function getTags(): Promise<{ tags: string[] }> {
