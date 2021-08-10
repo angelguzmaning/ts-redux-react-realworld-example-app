@@ -4,6 +4,7 @@ import { array, guard, object, string } from 'decoders';
 import settings from '../config/settings';
 import { Article, articleDecoder, ArticleForEditor, MultipleArticles, multipleArticlesDecoder } from '../types/article';
 import { GenericErrors, genericErrorsDecoder } from '../types/error';
+import { Profile, profileDecoder } from '../types/profile';
 import { User, userDecoder, UserForRegistration, UserSettings } from '../types/user';
 
 axios.defaults.baseURL = settings.baseApiUrl;
@@ -82,4 +83,19 @@ export async function updateArticle(slug: string, article: ArticleForEditor): Pr
   } catch ({ response: { data } }) {
     return Err(guard(object({ errors: genericErrorsDecoder }))(data).errors);
   }
+}
+
+export async function getProfile(username: string): Promise<Profile> {
+  const { data } = await axios.get(`profiles/${username}`);
+  return guard(object({ profile: profileDecoder }))(data).profile;
+}
+
+export async function followUser(username: string): Promise<Profile> {
+  const { data } = await axios.post(`profiles/${username}/follow`);
+  return guard(object({ profile: profileDecoder }))(data).profile;
+}
+
+export async function unfollowUser(username: string): Promise<Profile> {
+  const { data } = await axios.delete(`profiles/${username}/follow`);
+  return guard(object({ profile: profileDecoder }))(data).profile;
 }

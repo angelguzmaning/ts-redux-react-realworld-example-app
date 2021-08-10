@@ -1,5 +1,5 @@
-import { array, boolean, Decoder, iso8601, nullable, number, object, string } from 'decoders';
-import { Profile } from './profile';
+import { array, boolean, Decoder, iso8601, number, object, string } from 'decoders';
+import { Profile, profileDecoder } from './profile';
 
 export interface Article {
   slug: string;
@@ -24,12 +24,7 @@ export const articleDecoder: Decoder<Article> = object({
   updatedAt: iso8601,
   favorited: boolean,
   favoritesCount: number,
-  author: object({
-    username: string,
-    bio: nullable(string),
-    image: nullable(string),
-    following: boolean,
-  }),
+  author: profileDecoder,
 });
 
 export interface MultipleArticles {

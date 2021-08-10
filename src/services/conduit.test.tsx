@@ -2,13 +2,16 @@ import axios, { AxiosStatic } from 'axios';
 import {
   createArticle,
   favoriteArticle,
+  followUser,
   getArticle,
   getArticles,
+  getProfile,
   getTags,
   getUser,
   login,
   signUp,
   unfavoriteArticle,
+  unfollowUser,
   updateArticle,
   updateSettings,
 } from './conduit';
@@ -301,4 +304,52 @@ it('Should get article on successful article creation', async () => {
   const result = await updateArticle('', { title: '', body: '', description: '', tagList: [] });
   expect(result.isOk()).toBeTruthy();
   expect(result.unwrap().slug).toMatch(defaultArticle.slug);
+});
+
+it('Should get profile', async () => {
+  mockedAxios.get.mockResolvedValueOnce({
+    data: {
+      profile: {
+        username: 'the one',
+        bio: 'and only',
+        image: null,
+        following: false,
+      },
+    },
+  });
+
+  const result = await getProfile('1');
+  expect(result.username === 'the one').toBeTruthy();
+});
+
+it('Should get profile on follow', async () => {
+  mockedAxios.post.mockResolvedValueOnce({
+    data: {
+      profile: {
+        username: 'the one 2',
+        bio: 'and only',
+        image: null,
+        following: false,
+      },
+    },
+  });
+
+  const result = await followUser('1');
+  expect(result.username === 'the one 2').toBeTruthy();
+});
+
+it('Should get profile on unfollow', async () => {
+  mockedAxios.delete.mockResolvedValueOnce({
+    data: {
+      profile: {
+        username: 'the one 3',
+        bio: 'and only',
+        image: null,
+        following: false,
+      },
+    },
+  });
+
+  const result = await unfollowUser('1');
+  expect(result.username === 'the one 3').toBeTruthy();
 });

@@ -3,10 +3,12 @@ import { Profile } from '../../types/profile';
 
 export function UserInfo({
   user: { image, username, bio, following },
+  disabled,
   onFollowToggle,
   onEditSettings,
 }: {
   user: Profile;
+  disabled: boolean;
   onFollowToggle?: () => void;
   onEditSettings?: () => void;
 }) {
@@ -23,9 +25,14 @@ export function UserInfo({
             <p>{bio}</p>
 
             {sessionUsername === username ? (
-              <EditProfileButton onClick={onEditSettings} />
+              <EditProfileButton onClick={onEditSettings} disabled={disabled} />
             ) : (
-              <ToggleFollowButton following={following} username={username} onClick={onFollowToggle} />
+              <ToggleFollowButton
+                following={following}
+                username={username}
+                disabled={disabled}
+                onClick={onFollowToggle}
+              />
             )}
           </div>
         </div>
@@ -37,24 +44,25 @@ export function UserInfo({
 function ToggleFollowButton({
   following,
   username,
+  disabled,
   onClick,
 }: {
   following: boolean;
   username: string;
-
+  disabled: boolean;
   onClick?: () => void;
 }) {
   return (
-    <button className='btn btn-sm btn-outline-secondary action-btn' onClick={onClick}>
+    <button className='btn btn-sm btn-outline-secondary action-btn' onClick={onClick} disabled={disabled}>
       <i className='ion-plus-round'></i>
       {following ? 'Unfollow' : 'Follow'} {username}
     </button>
   );
 }
 
-function EditProfileButton({ onClick }: { onClick?: () => void }) {
+function EditProfileButton({ disabled, onClick }: { disabled: boolean; onClick?: () => void }) {
   return (
-    <button className='btn btn-sm btn-outline-secondary action-btn' onClick={onClick}>
+    <button className='btn btn-sm btn-outline-secondary action-btn' onClick={onClick} disabled={disabled}>
       <i className='ion-gear-a'></i>Edit Profile Settings
     </button>
   );

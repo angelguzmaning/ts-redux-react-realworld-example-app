@@ -13,6 +13,7 @@ import { NewArticle } from '../Pages/NewArticle/NewArticle';
 import { Register } from '../Pages/Register/Register';
 import { Settings } from '../Pages/Settings/Settings';
 import { endLoad, loadUser } from './App.slice';
+import { ProfilePage } from '../Pages/ProfilePage/ProfilePage';
 
 export function App() {
   const { loading, user } = useStoreWithInitializer(({ app }) => app, load);
@@ -44,6 +45,9 @@ export function App() {
             <Route exact path='/editor/:slug'>
               <EditArticle />
               {!userIsLogged && <Redirect to='/' />}
+            </Route>
+            <Route path='/profile/:username'>
+              <ProfilePage />
             </Route>
             <Route exact path='/'>
               <Home />
