@@ -68,7 +68,7 @@ it('Should redirect to login on favorite if the user is not logged in', async ()
 
   await act(async () => {
     fireEvent.click(screen.getByRole('button'));
-    expect(store.getState().home.articles.unwrap()[0].isSubmitting).toBe(false);
+    expect(store.getState().articleViewer.articles.unwrap()[0].isSubmitting).toBe(false);
   });
 
   expect(mockedFavoriteArticle.mock.calls.length).toBe(0);
@@ -99,11 +99,11 @@ it('Should favorite article', async () => {
 
   await act(async () => {
     fireEvent.click(screen.getByRole('button'));
-    expect(store.getState().home.articles.unwrap()[0].isSubmitting).toBe(true);
+    expect(store.getState().articleViewer.articles.unwrap()[0].isSubmitting).toBe(true);
   });
 
-  expect(store.getState().home.articles.unwrap()[0].isSubmitting).toBe(false);
-  expect(store.getState().home.articles.unwrap()[0].article.favorited).toBe(true);
+  expect(store.getState().articleViewer.articles.unwrap()[0].isSubmitting).toBe(false);
+  expect(store.getState().articleViewer.articles.unwrap()[0].article.favorited).toBe(true);
 });
 
 it('Should unfavorite article', async () => {
@@ -129,11 +129,11 @@ it('Should unfavorite article', async () => {
 
   await act(async () => {
     fireEvent.click(screen.getByRole('button'));
-    expect(store.getState().home.articles.unwrap()[0].isSubmitting).toBe(true);
+    expect(store.getState().articleViewer.articles.unwrap()[0].isSubmitting).toBe(true);
   });
 
-  expect(store.getState().home.articles.unwrap()[0].isSubmitting).toBe(false);
-  expect(store.getState().home.articles.unwrap()[0].article.favorited).toBe(false);
+  expect(store.getState().articleViewer.articles.unwrap()[0].isSubmitting).toBe(false);
+  expect(store.getState().articleViewer.articles.unwrap()[0].article.favorited).toBe(false);
 });
 
 it('Should load another page', async () => {
@@ -157,7 +157,7 @@ it('Should load another page', async () => {
     fireEvent.click(screen.getByLabelText(/Go to page number 5/));
   });
 
-  expect(store.getState().home.currentPage).toBe(5);
+  expect(store.getState().articleViewer.currentPage).toBe(5);
   expect(screen.getByText('After change')).toBeInTheDocument();
   expect(mockedGetArticles.mock.calls[1][0]).toBe(40);
 });

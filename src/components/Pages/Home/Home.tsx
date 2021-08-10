@@ -1,22 +1,13 @@
 import { Option } from '@hqoss/monads';
-import { favoriteArticle, getArticles, getTags, unfavoriteArticle } from '../../../services/conduit';
+import { getArticles, getTags } from '../../../services/conduit';
 import { store } from '../../../state/store';
 import { useStoreWithInitializer } from '../../../state/storeHooks';
-import { Article } from '../../../types/article';
-import { ArticlePreview } from '../../ArticlePreview/ArticlePreview';
-import { Pagination } from '../../Pagination/Pagination';
-import {
-  changePage,
-  endSubmittingFavorite,
-  HomeState,
-  loadArticles,
-  loadTags,
-  startLoading,
-  startSubmittingFavorite,
-} from './Home.slice';
+import { ArticlesViewer } from '../../ArticlesViewer/ArticlesViewer';
+import { changePage, loadArticles, startLoadingArticles } from '../../ArticlesViewer/ArticlesViewer.slice';
+import { loadTags, startLoadingTags } from './Home.slice';
 
 export function Home() {
-  const { articles, tags, articlesCount, currentPage } = useStoreWithInitializer(({ home }) => home, load);
+  const { tags } = useStoreWithInitializer(({ home }) => home, load);
 
   return (
     <div className='home-page'>
@@ -24,19 +15,7 @@ export function Home() {
       <div className='container page'>
         <div className='row'>
           <div className='col-md-9'>
-            <div className='feed-toggle'>
-              <ul className='nav nav-pills outline-active'>
-                <li className='nav-item'>
-                  <a className='nav-link active' href=''>
-                    Global Feed
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {renderArticles(articles)}
-
-            <Pagination currentPage={currentPage} count={articlesCount} itemsPerPage={10} onPageChange={onPageChange} />
+            <ArticlesViewer onPageChange={onPageChange} />
           </div>
 
           <div className='col-md-3'>{renderSidebar(tags)}</div>
@@ -47,7 +26,8 @@ export function Home() {
 }
 
 async function load() {
-  store.dispatch(startLoading());
+  store.dispatch(startLoadingArticles());
+  store.dispatch(startLoadingTags());
 
   const multipleArticles = await getArticles();
   store.dispatch(loadArticles(multipleArticles));
@@ -65,38 +45,6 @@ function renderBanner() {
       </div>
     </div>
   );
-}
-
-function renderArticles(articles: HomeState['articles']) {
-  return articles.match({
-    none: () => [
-      <div className='article-preview' key={1}>
-        Loading articles...
-      </div>,
-    ],
-    some: (articles) =>
-      articles.map(({ article, isSubmitting }, index) => (
-        <ArticlePreview
-          key={article.slug}
-          article={article}
-          isSubmitting={isSubmitting}
-          onFavoriteToggle={isSubmitting ? undefined : onFavoriteToggle(index, article)}
-        />
-      )),
-  });
-}
-
-function onFavoriteToggle(index: number, { slug, favorited }: Article) {
-  return async () => {
-    if (store.getState().app.user.isNone()) {
-      location.hash = '#/login';
-      return;
-    }
-    store.dispatch(startSubmittingFavorite(index));
-
-    const article = await (favorited ? unfavoriteArticle(slug) : favoriteArticle(slug));
-    store.dispatch(endSubmittingFavorite({ index, article }));
-  };
 }
 
 async function onPageChange(index: number) {
