@@ -16,8 +16,14 @@ it('Should render correct amount of page buttons', () => {
 function expectPageButtonCount(amount: number) {
   const buttons = screen.queryAllByLabelText(/Go to page number \d/);
   expect(buttons.length).toBe(amount);
-  expect(parseInt(R.last(buttons)?.textContent || '0')).toBe(amount);
+
+  if (amount > 0) expect(parseInt(R.last(buttons)?.textContent || '0')).toBe(amount);
 }
+
+it("Should not render buttons if there's only 1 page", () => {
+  render(<Pagination currentPage={1} count={10} itemsPerPage={10} />);
+  expectPageButtonCount(0);
+});
 
 it('Should render active page as active and the rest as non active', () => {
   render(<Pagination currentPage={7} count={500} itemsPerPage={10} />);
