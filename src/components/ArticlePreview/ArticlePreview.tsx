@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 import { Article } from '../../types/article';
 
 export function ArticlePreview({
@@ -26,9 +27,9 @@ export function ArticlePreview({
           <img src={image || undefined} />
         </a>
         <div className='info'>
-          <a href={`/#/@${username}`} className='author'>
+          <Link to={`/profile/${username}`} className='author'>
             {username}
-          </a>
+          </Link>
           <span className='date'>{format(createdAt, 'PP')}</span>
         </div>
         <button

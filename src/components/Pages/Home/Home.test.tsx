@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { favoriteArticle, getArticles, getTags, unfavoriteArticle } from '../../../services/conduit';
 import { store } from '../../../state/store';
 import { initialize, loadUser } from '../../App/App.slice';
@@ -45,7 +46,13 @@ it('Should load articles', async () => {
   mockedGetTags.mockResolvedValueOnce({ tags: ['twitter', 'facebook', 'google'] });
 
   await act(async () => {
-    await render(<Home />);
+    await render(
+      <MemoryRouter>
+        <MemoryRouter>
+          <Home />
+        </MemoryRouter>
+      </MemoryRouter>
+    );
   });
 
   screen.getByText('google');
@@ -63,7 +70,11 @@ it('Should redirect to login on favorite if the user is not logged in', async ()
 
   await act(async () => {
     store.dispatch(initialize());
-    await render(<Home />);
+    await render(
+      <MemoryRouter>
+        <Home />
+      </MemoryRouter>
+    );
   });
 
   await act(async () => {
@@ -94,7 +105,11 @@ it('Should favorite article', async () => {
         image: null,
       })
     );
-    await render(<Home />);
+    await render(
+      <MemoryRouter>
+        <Home />
+      </MemoryRouter>
+    );
   });
 
   await act(async () => {
@@ -124,7 +139,11 @@ it('Should unfavorite article', async () => {
         image: null,
       })
     );
-    await render(<Home />);
+    await render(
+      <MemoryRouter>
+        <Home />
+      </MemoryRouter>
+    );
   });
 
   await act(async () => {
@@ -145,7 +164,11 @@ it('Should load another page', async () => {
 
   await act(async () => {
     store.dispatch(initialize());
-    await render(<Home />);
+    await render(
+      <MemoryRouter>
+        <Home />
+      </MemoryRouter>
+    );
   });
 
   mockedGetArticles.mockResolvedValueOnce({

@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { ArticlePreview } from './ArticlePreview';
 
 const defaultArticle = {
@@ -20,19 +21,31 @@ const defaultArticle = {
 };
 
 it('Favorite button should be outlined if not favorited', () => {
-  render(<ArticlePreview article={defaultArticle} isSubmitting={false} />);
+  render(
+    <MemoryRouter>
+      <ArticlePreview article={defaultArticle} isSubmitting={false} />
+    </MemoryRouter>
+  );
 
   expect(screen.getByLabelText('Toggle Favorite').className.split(' ')).toContain('btn-outline-primary');
 });
 
 it('Favorite button should be primary if favorited', () => {
-  render(<ArticlePreview article={{ ...defaultArticle, favorited: true }} isSubmitting={false} />);
+  render(
+    <MemoryRouter>
+      <ArticlePreview article={{ ...defaultArticle, favorited: true }} isSubmitting={false} />
+    </MemoryRouter>
+  );
 
   expect(screen.getByLabelText('Toggle Favorite').className.split(' ')).toContain('btn-primary');
 });
 
 it('Should display tags', () => {
-  render(<ArticlePreview article={defaultArticle} isSubmitting={false} />);
+  render(
+    <MemoryRouter>
+      <ArticlePreview article={defaultArticle} isSubmitting={false} />
+    </MemoryRouter>
+  );
 
   expect(screen.getByText('tag1')).toBeInTheDocument();
   expect(screen.getByText('tag2')).toBeInTheDocument();
