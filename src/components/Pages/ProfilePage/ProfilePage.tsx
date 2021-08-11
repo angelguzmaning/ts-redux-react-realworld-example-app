@@ -1,7 +1,8 @@
+import { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { followUser, getArticles, getProfile, unfollowUser } from '../../../services/conduit';
 import { store } from '../../../state/store';
-import { useStoreWithInitializer } from '../../../state/storeHooks';
+import { useStore } from '../../../state/storeHooks';
 import { redirect } from '../../../types/location';
 import { Profile } from '../../../types/profile';
 import { ArticlesViewer } from '../../ArticlesViewer/ArticlesViewer';
@@ -11,12 +12,13 @@ import { initializeProfile, loadProfile, startSubmitting } from './ProfilePage.s
 
 export function ProfilePage() {
   const { username } = useParams<{ username: string }>();
-
   const favorites = useLocation().pathname.endsWith('favorites');
-  const { profile, submitting } = useStoreWithInitializer(
-    ({ profile }) => profile,
-    () => onLoad(username, favorites)
-  );
+
+  useEffect(() => {
+    onLoad(username, favorites);
+  }, [username]);
+
+  const { profile, submitting } = useStore(({ profile }) => profile);
 
   return (
     <div className='profile-page'>
