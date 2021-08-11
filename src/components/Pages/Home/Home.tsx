@@ -15,7 +15,12 @@ export function Home() {
       <div className='container page'>
         <div className='row'>
           <div className='col-md-9'>
-            <ArticlesViewer onPageChange={onPageChange} />
+            <ArticlesViewer
+              toggleClassName='feed-toggle'
+              selectedTab='Global Feed'
+              tabs={['Global Feed']}
+              onPageChange={onPageChange}
+            />
           </div>
 
           <div className='col-md-3'>{renderSidebar(tags)}</div>

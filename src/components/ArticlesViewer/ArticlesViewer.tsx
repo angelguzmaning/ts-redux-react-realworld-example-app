@@ -3,48 +3,73 @@ import { favoriteArticle, unfavoriteArticle } from '../../services/conduit';
 import { store } from '../../state/store';
 import { useStore } from '../../state/storeHooks';
 import { Article } from '../../types/article';
+import { classObjectToClassName } from '../../types/style';
 import { ArticlePreview } from '../ArticlePreview/ArticlePreview';
 import { Pagination } from '../Pagination/Pagination';
 import { ArticleViewerState, endSubmittingFavorite, startSubmittingFavorite } from './ArticlesViewer.slice';
 
-export function ArticlesViewer({ onPageChange }: { onPageChange?: (index: number) => void }) {
+export function ArticlesViewer({
+  toggleClassName,
+  tabs,
+  selectedTab,
+  onPageChange,
+  onTabChange,
+}: {
+  toggleClassName: string;
+  tabs: string[];
+  selectedTab: string;
+  onPageChange?: (index: number) => void;
+  onTabChange?: (tab: string) => void;
+}) {
   const { articles, articlesCount, currentPage } = useStore(({ articleViewer }) => articleViewer);
 
   return (
     <Fragment>
-      <div className='feed-toggle'>
+      <div className={toggleClassName}>
         <ul className='nav nav-pills outline-active'>
-          <li className='nav-item'>
-            <a className='nav-link active' href=''>
-              Global Feed
-            </a>
-          </li>
+          {tabs.map((tab) => (
+            <li key={tab} className='nav-item'>
+              <a
+                className={classObjectToClassName({ 'nav-link': true, active: tab === selectedTab })}
+                href='#'
+                onClick={(ev) => {
+                  ev.preventDefault();
+                  onTabChange && onTabChange(tab);
+                }}
+              >
+                {tab}
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
 
-      {renderArticles(articles)}
+      <ArticleList articles={articles} />
 
       <Pagination currentPage={currentPage} count={articlesCount} itemsPerPage={10} onPageChange={onPageChange} />
     </Fragment>
   );
 }
 
-function renderArticles(articles: ArticleViewerState['articles']) {
+function ArticleList({ articles }: { articles: ArticleViewerState['articles'] }) {
   return articles.match({
-    none: () => [
+    none: () => (
       <div className='article-preview' key={1}>
         Loading articles...
-      </div>,
-    ],
-    some: (articles) =>
-      articles.map(({ article, isSubmitting }, index) => (
-        <ArticlePreview
-          key={article.slug}
-          article={article}
-          isSubmitting={isSubmitting}
-          onFavoriteToggle={isSubmitting ? undefined : onFavoriteToggle(index, article)}
-        />
-      )),
+      </div>
+    ),
+    some: (articles) => (
+      <Fragment>
+        {articles.map(({ article, isSubmitting }, index) => (
+          <ArticlePreview
+            key={article.slug}
+            article={article}
+            isSubmitting={isSubmitting}
+            onFavoriteToggle={isSubmitting ? undefined : onFavoriteToggle(index, article)}
+          />
+        ))}
+      </Fragment>
+    ),
   });
 }
 

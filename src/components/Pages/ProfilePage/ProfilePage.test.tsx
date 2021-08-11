@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Link, MemoryRouter, Route } from 'react-router-dom';
 import { followUser, getArticles, getProfile, unfollowUser } from '../../../services/conduit';
 import { store } from '../../../state/store';
 import { Profile } from '../../../types/profile';
@@ -11,7 +11,6 @@ jest.mock('../../../services/conduit.ts');
 const mockedFollowUser = followUser as jest.Mock<ReturnType<typeof followUser>>;
 const mockedUnfollowUser = unfollowUser as jest.Mock<ReturnType<typeof unfollowUser>>;
 const mockedGetArticles = getArticles as jest.Mock<ReturnType<typeof getArticles>>;
-mockedGetArticles.mockResolvedValue({ articles: [], articlesCount: 0 });
 
 const defaultProfile: Profile = {
   username: '',
@@ -21,6 +20,24 @@ const defaultProfile: Profile = {
 };
 const mockedGetProfile = getProfile as jest.Mock<ReturnType<typeof getProfile>>;
 mockedGetProfile.mockResolvedValue(defaultProfile);
+
+const defaultArticle = {
+  author: {
+    bio: null,
+    following: false,
+    image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+    username: 'Jazmin Martinez',
+  },
+  body: 'Test 1',
+  createdAt: new Date(),
+  description: 'Test 1',
+  favorited: false,
+  favoritesCount: 0,
+  slug: 'test-pmy91z',
+  tagList: [],
+  title: 'Test',
+  updatedAt: new Date(),
+};
 
 beforeEach(async () => {
   await act(async () => {
@@ -33,6 +50,7 @@ beforeEach(async () => {
         image: null,
       })
     );
+    location.hash = '#/profile/something/';
   });
 });
 
@@ -40,8 +58,10 @@ async function renderWithPath(profile: string) {
   await act(async () => {
     render(
       <MemoryRouter initialEntries={[`/${profile}`]}>
-        <Route path='/:profile'>
+        <Route path='/:username'>
           <ProfilePage />
+          <Link to={`/${profile}`}>Normal</Link>
+          <Link to={`/${profile}/favorites`}>Favorites</Link>
         </Route>
       </MemoryRouter>
     );
@@ -66,6 +86,7 @@ it('Should load profile', async () => {
     username: 'The Jake',
     bio: 'The Great',
   });
+  mockedGetArticles.mockResolvedValueOnce({ articles: [], articlesCount: 0 });
 
   await act(async () => {
     await renderWithPath('something');
@@ -83,6 +104,7 @@ it('Should go to sign up page if a guest tries to follow', async () => {
     username: 'The Jake',
     bio: 'The Great',
   });
+  mockedGetArticles.mockResolvedValueOnce({ articles: [], articlesCount: 0 });
 
   await act(async () => {
     store.dispatch(initialize());
@@ -103,6 +125,7 @@ it('Should follow user', async () => {
     bio: 'The Great',
   });
   mockedFollowUser.mockResolvedValueOnce({ ...defaultProfile, following: true });
+  mockedGetArticles.mockResolvedValueOnce({ articles: [], articlesCount: 0 });
 
   await act(async () => {
     await renderWithPath('something');
@@ -125,6 +148,7 @@ it('Should unfollow user', async () => {
     following: true,
   });
   mockedUnfollowUser.mockResolvedValueOnce({ ...defaultProfile, following: false });
+  mockedGetArticles.mockResolvedValueOnce({ articles: [], articlesCount: 0 });
 
   await act(async () => {
     await renderWithPath('something');
@@ -147,6 +171,7 @@ it('Should redirect to settings on Edit Profile Settings when the profile is for
     bio: 'The Great',
     following: true,
   });
+  mockedGetArticles.mockResolvedValueOnce({ articles: [], articlesCount: 0 });
 
   await act(async () => {
     await renderWithPath('something');
@@ -157,4 +182,154 @@ it('Should redirect to settings on Edit Profile Settings when the profile is for
   });
 
   expect(location.hash === '#/settings').toBeTruthy();
+});
+
+it('Should load articles for profile user', async () => {
+  location.hash = '#/profile/something';
+  mockedGetProfile.mockResolvedValueOnce({
+    ...defaultProfile,
+    username: 'jake',
+    bio: 'The Great',
+    following: true,
+  });
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, title: 'The Article IS HERE!' }],
+    articlesCount: 1,
+  });
+
+  await act(async () => {
+    await renderWithPath('jake');
+  });
+
+  expect(mockedGetArticles.mock.calls).toHaveLength(1);
+  expect(mockedGetArticles.mock.calls[0][0]).toHaveProperty('author', 'jake');
+  expect(screen.getByText('The Article IS HERE!')).toBeInTheDocument();
+});
+
+it('Should load favorite articles for profile user', async () => {
+  location.hash = '#/profile/jake/favorites';
+  mockedGetProfile.mockResolvedValueOnce({
+    ...defaultProfile,
+    username: 'jake',
+    bio: 'The Great',
+    following: true,
+  });
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, title: 'The Article IS HERE! 2' }],
+    articlesCount: 1,
+  });
+
+  await act(async () => {
+    await renderWithPath('jake/favorites');
+  });
+
+  expect(mockedGetArticles.mock.calls).toHaveLength(1);
+  expect(mockedGetArticles.mock.calls[0][0]).toHaveProperty('favorited', 'jake');
+  expect(screen.getByText('The Article IS HERE! 2')).toBeInTheDocument();
+});
+
+it('Should load articles for profile user then favorites when Favorites is clicked', async () => {
+  location.hash = '#/profile/something';
+  mockedGetProfile.mockResolvedValueOnce({
+    ...defaultProfile,
+    username: 'jake',
+    bio: 'The Great',
+    following: true,
+  });
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, title: 'The Article IS HERE!' }],
+    articlesCount: 1,
+  });
+
+  await act(async () => {
+    await renderWithPath('jake');
+  });
+
+  expect(screen.getByText('The Article IS HERE!')).toBeInTheDocument();
+
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, title: 'The Article IS HERE! after' }],
+    articlesCount: 1,
+  });
+
+  await act(async () => {
+    fireEvent.click(screen.getByText('Favorited Articles'));
+  });
+
+  expect(mockedGetArticles.mock.calls).toHaveLength(2);
+  expect(mockedGetArticles.mock.calls[0][0]).toHaveProperty('author', 'jake');
+  expect(mockedGetArticles.mock.calls[1][0]).toHaveProperty('favorited', 'jake');
+  expect(screen.getByText('The Article IS HERE! after')).toBeInTheDocument();
+  expect(location.hash === '#/profile/jake/favorites');
+});
+
+it('Should load favorite articles for profile user then normal articles', async () => {
+  location.hash = '#/profile/something/favorites';
+  mockedGetProfile.mockResolvedValueOnce({
+    ...defaultProfile,
+    username: 'jake',
+    bio: 'The Great',
+    following: true,
+  });
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, title: 'The Article IS HERE!' }],
+    articlesCount: 1,
+  });
+
+  await act(async () => {
+    await renderWithPath('jake/favorites');
+  });
+
+  expect(screen.getByText('The Article IS HERE!')).toBeInTheDocument();
+
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, title: 'The Article IS HERE! after' }],
+    articlesCount: 1,
+  });
+
+  await act(async () => {
+    fireEvent.click(screen.getByText('My Articles'));
+  });
+
+  expect(mockedGetArticles.mock.calls).toHaveLength(2);
+  expect(mockedGetArticles.mock.calls[0][0]).toHaveProperty('favorited', 'jake');
+  expect(mockedGetArticles.mock.calls[1][0]).toHaveProperty('author', 'jake');
+  expect(screen.getByText('The Article IS HERE! after')).toBeInTheDocument();
+  expect(location.hash === '#/profile/jake');
+});
+
+it('Should change page', async () => {
+  location.hash = '#/profile/something/favorites';
+  mockedGetProfile.mockResolvedValueOnce({
+    ...defaultProfile,
+    username: 'jake',
+    bio: 'The Great',
+    following: true,
+  });
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, title: 'The Article IS HERE!' }],
+    articlesCount: 100,
+  });
+
+  await act(async () => {
+    await renderWithPath('jake/favorites');
+  });
+
+  expect(screen.getByText('The Article IS HERE!')).toBeInTheDocument();
+
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, title: 'The Article IS HERE! after' }],
+    articlesCount: 100,
+  });
+
+  await act(async () => {
+    fireEvent.click(screen.getByLabelText(/Go to page number 5/));
+  });
+
+  expect(mockedGetArticles.mock.calls).toHaveLength(2);
+  expect(mockedGetArticles.mock.calls[0][0]).toHaveProperty('favorited', 'jake');
+  expect(mockedGetArticles.mock.calls[1][0]).toHaveProperty('favorited', 'jake');
+  expect(mockedGetArticles.mock.calls[1][0]).toHaveProperty('offset', 40);
+  expect(screen.getByText('The Article IS HERE! after')).toBeInTheDocument();
+  expect(location.hash === '#/profile/jake');
 });
