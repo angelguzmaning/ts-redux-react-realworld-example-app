@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Fragment } from 'react';
-import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { HashRouter, Redirect, Route, RouteProps, Switch } from 'react-router-dom';
 import { getUser } from '../../services/conduit';
 import { store } from '../../state/store';
 import { useStoreWithInitializer } from '../../state/storeHooks';
@@ -26,26 +26,21 @@ export function App() {
         <Fragment>
           <Header />
           <Switch>
-            <Route exact path='/login'>
+            <GuestOnlyRoute exact path='/login' userIsLogged={userIsLogged}>
               <Login />
-              {userIsLogged && <Redirect to='/' />}
-            </Route>
-            <Route exact path='/register'>
+            </GuestOnlyRoute>
+            <GuestOnlyRoute exact path='/register' userIsLogged={userIsLogged}>
               <Register />
-              {userIsLogged && <Redirect to='/' />}
-            </Route>
-            <Route exact path='/settings'>
+            </GuestOnlyRoute>
+            <UserOnlyRoute exact path='/settings' userIsLogged={userIsLogged}>
               <Settings />
-              {!userIsLogged && <Redirect to='/' />}
-            </Route>
-            <Route exact path='/editor'>
+            </UserOnlyRoute>
+            <UserOnlyRoute exact path='/editor' userIsLogged={userIsLogged}>
               <NewArticle />
-              {!userIsLogged && <Redirect to='/' />}
-            </Route>
-            <Route exact path='/editor/:slug'>
+            </UserOnlyRoute>
+            <UserOnlyRoute exact path='/editor/:slug' userIsLogged={userIsLogged}>
               <EditArticle />
-              {!userIsLogged && <Redirect to='/' />}
-            </Route>
+            </UserOnlyRoute>
             <Route path='/profile/:username'>
               <ProfilePage />
             </Route>
@@ -76,4 +71,32 @@ async function load() {
   } catch {
     store.dispatch(endLoad());
   }
+}
+
+/* istanbul ignore next */
+function GuestOnlyRoute({
+  children,
+  userIsLogged,
+  ...rest
+}: { children: JSX.Element | JSX.Element[]; userIsLogged: boolean } & RouteProps) {
+  return (
+    <Route {...rest}>
+      {children}
+      {userIsLogged && <Redirect to='/' />}
+    </Route>
+  );
+}
+
+/* istanbul ignore next */
+function UserOnlyRoute({
+  children,
+  userIsLogged,
+  ...rest
+}: { children: JSX.Element | JSX.Element[]; userIsLogged: boolean } & RouteProps) {
+  return (
+    <Route {...rest}>
+      {children}
+      {!userIsLogged && <Redirect to='/' />}
+    </Route>
+  );
 }

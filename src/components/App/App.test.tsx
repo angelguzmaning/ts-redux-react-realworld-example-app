@@ -66,7 +66,7 @@ it('Should get user if token is on storage', async () => {
 });
 
 it('Should end load if get user fails', async () => {
-  act(() => {
+  await act(async () => {
     store.dispatch(initialize());
   });
   mockedGetUser.mockRejectedValueOnce({});
