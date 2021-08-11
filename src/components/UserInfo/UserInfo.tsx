@@ -55,7 +55,8 @@ function ToggleFollowButton({
   return (
     <button className='btn btn-sm btn-outline-secondary action-btn' onClick={onClick} disabled={disabled}>
       <i className='ion-plus-round'></i>
-      {following ? 'Unfollow' : 'Follow'} {username}
+      &nbsp;
+      {following ? ' Unfollow' : ' Follow'} {username}
     </button>
   );
 }
@@ -63,7 +64,7 @@ function ToggleFollowButton({
 function EditProfileButton({ disabled, onClick }: { disabled: boolean; onClick?: () => void }) {
   return (
     <button className='btn btn-sm btn-outline-secondary action-btn' onClick={onClick} disabled={disabled}>
-      <i className='ion-gear-a'></i>Edit Profile Settings
+      <i className='ion-gear-a'></i>&nbsp; Edit Profile Settings
     </button>
   );
 }
