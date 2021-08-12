@@ -2,7 +2,7 @@ export function Footer() {
   return (
     <footer>
       <div className='container'>
-        <a href='/' className='logo-font'>
+        <a href='/#/' className='logo-font'>
           conduit
         </a>
         <span className='attribution'>
