@@ -25,29 +25,43 @@ export function ArticlesViewer({
 
   return (
     <Fragment>
-      <div className={toggleClassName}>
-        <ul className='nav nav-pills outline-active'>
-          {tabs.map((tab) => (
-            <li key={tab} className='nav-item'>
-              <a
-                className={classObjectToClassName({ 'nav-link': true, active: tab === selectedTab })}
-                href='#'
-                onClick={(ev) => {
-                  ev.preventDefault();
-                  onTabChange && onTabChange(tab);
-                }}
-              >
-                {tab}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
+      <ArticlesTabSet {...{ tabs, selectedTab, toggleClassName, onTabChange }} />
       <ArticleList articles={articles} />
-
       <Pagination currentPage={currentPage} count={articlesCount} itemsPerPage={10} onPageChange={onPageChange} />
     </Fragment>
+  );
+}
+
+function ArticlesTabSet({
+  tabs,
+  toggleClassName,
+  selectedTab,
+  onTabChange,
+}: {
+  tabs: string[];
+  toggleClassName: string;
+  selectedTab: string;
+  onTabChange?: (tab: string) => void;
+}) {
+  return (
+    <div className={toggleClassName}>
+      <ul className='nav nav-pills outline-active'>
+        {tabs.map((tab) => (
+          <li key={tab} className='nav-item'>
+            <a
+              className={classObjectToClassName({ 'nav-link': true, active: tab === selectedTab })}
+              href='#'
+              onClick={(ev) => {
+                ev.preventDefault();
+                onTabChange && onTabChange(tab);
+              }}
+            >
+              {tab}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
