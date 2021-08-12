@@ -25,7 +25,9 @@ export function Home() {
           />
         </div>
 
-        <div className='col-md-3'>{renderSidebar(tags)}</div>
+        <div className='col-md-3'>
+          <HomeSidebar tags={tags} />
+        </div>
       </ContainerPage>
     </div>
   );
@@ -90,7 +92,7 @@ async function getFeedOrGlobalArticles(filters: FeedFilters = {}) {
   );
 }
 
-function renderSidebar(tags: Option<string[]>) {
+function HomeSidebar({ tags }: { tags: Option<string[]> }) {
   return (
     <div className='sidebar'>
       <p>Popular Tags</p>
