@@ -51,3 +51,8 @@ export interface ArticlesFilters {
   limit?: number;
   offset?: number;
 }
+
+export interface FeedFilters {
+  limit?: number;
+  offset?: number;
+}

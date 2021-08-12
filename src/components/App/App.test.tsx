@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 import axios from 'axios';
-import { getArticles, getTags, getUser } from '../../services/conduit';
+import { getArticles, getFeed, getTags, getUser } from '../../services/conduit';
 import { store } from '../../state/store';
 import { App } from './App';
 import { initialize } from './App.slice';
@@ -9,6 +9,7 @@ jest.mock('../../services/conduit');
 jest.mock('axios');
 
 const mockedGetArticles = getArticles as jest.Mock<ReturnType<typeof getArticles>>;
+const mockedGetFeed = getFeed as jest.Mock<ReturnType<typeof getFeed>>;
 const mockedGetTags = getTags as jest.Mock<ReturnType<typeof getTags>>;
 const mockedGetUser = getUser as jest.Mock<ReturnType<typeof getUser>>;
 
@@ -44,7 +45,7 @@ it('Should get user if token is on storage', async () => {
     bio: 'I work at statefarm',
     image: null,
   });
-  mockedGetArticles.mockResolvedValueOnce({
+  mockedGetFeed.mockResolvedValueOnce({
     articles: [],
     articlesCount: 0,
   });

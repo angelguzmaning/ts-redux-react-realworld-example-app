@@ -5,6 +5,7 @@ import {
   followUser,
   getArticle,
   getArticles,
+  getFeed,
   getProfile,
   getTags,
   getUser,
@@ -352,4 +353,17 @@ it('Should get profile on unfollow', async () => {
 
   const result = await unfollowUser('1');
   expect(result.username === 'the one 3').toBeTruthy();
+});
+
+it('Should get feed', async () => {
+  mockedAxios.get.mockResolvedValueOnce({
+    data: {
+      articles: [defaultArticle, defaultArticle],
+      articlesCount: 2,
+    },
+  });
+
+  const result = await getFeed();
+  expect(result.articles.length).toBe(2);
+  expect(result.articlesCount).toBe(2);
 });

@@ -1,9 +1,10 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { favoriteArticle, getArticles, getTags, unfavoriteArticle } from '../../../services/conduit';
+import { favoriteArticle, getArticles, getFeed, getTags, unfavoriteArticle } from '../../../services/conduit';
 import { store } from '../../../state/store';
 import { initialize, loadUser } from '../../App/App.slice';
 import { Home } from './Home';
+import { changeTab } from './Home.slice';
 
 jest.mock('../../../services/conduit');
 
@@ -11,6 +12,7 @@ const mockedGetArticles = getArticles as jest.Mock<ReturnType<typeof getArticles
 const mockedGetTags = getTags as jest.Mock<ReturnType<typeof getTags>>;
 const mockedFavoriteArticle = favoriteArticle as jest.Mock<ReturnType<typeof favoriteArticle>>;
 const mockedUnfavoriteArticle = unfavoriteArticle as jest.Mock<ReturnType<typeof unfavoriteArticle>>;
+const mockedGetFeed = getFeed as jest.Mock<ReturnType<typeof getFeed>>;
 
 const defaultArticle = {
   author: {
@@ -29,6 +31,13 @@ const defaultArticle = {
   title: 'Test',
   updatedAt: new Date(),
 };
+
+beforeEach(async () => {
+  await act(async () => {
+    store.dispatch(initialize());
+    store.dispatch(changeTab('Global Feed'));
+  });
+});
 
 it('Should load articles', async () => {
   mockedGetArticles.mockResolvedValueOnce({
@@ -58,6 +67,42 @@ it('Should load articles', async () => {
   screen.getByText('google');
   screen.getByText('Test 1');
   screen.getByText('Test 2');
+  expect(store.getState().home.selectedTab).toMatch('Global Feed');
+});
+
+it('Should load feed articles if user is logged in', async () => {
+  mockedGetFeed.mockResolvedValueOnce({
+    articles: [
+      defaultArticle,
+      {
+        ...defaultArticle,
+        description: 'Test 2',
+        slug: 'test-2344',
+        author: { ...defaultArticle.author, image: null },
+      },
+    ],
+    articlesCount: 0,
+  });
+  mockedGetTags.mockResolvedValueOnce({ tags: [] });
+
+  await act(async () => {
+    store.dispatch(
+      loadUser({
+        email: 'jake@jake.jake',
+        token: 'jwt.token.here',
+        username: 'jake',
+        bio: 'I work at statefarm',
+        image: null,
+      })
+    );
+    await render(
+      <MemoryRouter>
+        <Home />
+      </MemoryRouter>
+    );
+  });
+
+  expect(store.getState().home.selectedTab).toMatch('Your Feed');
 });
 
 it('Should redirect to login on favorite if the user is not logged in', async () => {
@@ -69,7 +114,6 @@ it('Should redirect to login on favorite if the user is not logged in', async ()
   mockedFavoriteArticle.mockResolvedValueOnce({ ...defaultArticle, favorited: true });
 
   await act(async () => {
-    store.dispatch(initialize());
     await render(
       <MemoryRouter>
         <Home />
@@ -88,7 +132,7 @@ it('Should redirect to login on favorite if the user is not logged in', async ()
 });
 
 it('Should favorite article', async () => {
-  mockedGetArticles.mockResolvedValueOnce({
+  mockedGetFeed.mockResolvedValueOnce({
     articles: [defaultArticle],
     articlesCount: 0,
   });
@@ -122,7 +166,7 @@ it('Should favorite article', async () => {
 });
 
 it('Should unfavorite article', async () => {
-  mockedGetArticles.mockResolvedValueOnce({
+  mockedGetFeed.mockResolvedValueOnce({
     articles: [{ ...defaultArticle, favorited: true }],
     articlesCount: 0,
   });
@@ -163,7 +207,6 @@ it('Should load another page', async () => {
   mockedGetTags.mockResolvedValueOnce({ tags: [] });
 
   await act(async () => {
-    store.dispatch(initialize());
     await render(
       <MemoryRouter>
         <Home />
@@ -183,4 +226,65 @@ it('Should load another page', async () => {
   expect(store.getState().articleViewer.currentPage).toBe(5);
   expect(screen.getByText('After change')).toBeInTheDocument();
   expect(mockedGetArticles.mock.calls[1][0]).toHaveProperty('offset', 40);
+});
+
+it('Should change tabs', async () => {
+  mockedGetFeed.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, favorited: true }],
+    articlesCount: 0,
+  });
+  mockedGetTags.mockResolvedValueOnce({ tags: ['the real tag'] });
+  mockedUnfavoriteArticle.mockResolvedValueOnce({ ...defaultArticle, favorited: false });
+
+  await act(async () => {
+    store.dispatch(
+      loadUser({
+        email: 'jake@jake.jake',
+        token: 'jwt.token.here',
+        username: 'jake',
+        bio: 'I work at statefarm',
+        image: null,
+      })
+    );
+    await render(
+      <MemoryRouter>
+        <Home />
+      </MemoryRouter>
+    );
+  });
+
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, favorited: true }],
+    articlesCount: 0,
+  });
+
+  await act(async () => {
+    fireEvent.click(screen.getByText('Global Feed'));
+  });
+
+  expect(store.getState().home.selectedTab).toMatch('Global Feed');
+
+  mockedGetFeed.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, favorited: true }],
+    articlesCount: 0,
+  });
+
+  await act(async () => {
+    fireEvent.click(screen.getByText('Your Feed'));
+  });
+
+  expect(store.getState().home.selectedTab).toMatch('Your Feed');
+
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [{ ...defaultArticle, favorited: true }],
+    articlesCount: 0,
+  });
+
+  await act(async () => {
+    fireEvent.click(screen.getByText('the real tag'));
+  });
+
+  expect(screen.getByText('# the real tag')).toHaveClass('active');
+  expect(mockedGetArticles.mock.calls).toHaveLength(2);
+  expect(mockedGetArticles.mock.calls[1][0]).toHaveProperty('tag', 'the real tag');
 });

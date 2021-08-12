@@ -23,9 +23,9 @@ export function ArticlePreview({
   return (
     <div className='article-preview'>
       <div className='article-meta'>
-        <a href='profile.html'>
+        <Link to={`/profile/${username}`} className='author'>
           <img src={image || undefined} />
-        </a>
+        </Link>
         <div className='info'>
           <Link to={`/profile/${username}`} className='author'>
             {username}

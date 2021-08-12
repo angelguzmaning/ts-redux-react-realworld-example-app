@@ -1,13 +1,14 @@
 import { Option } from '@hqoss/monads';
-import { getArticles, getTags } from '../../../services/conduit';
+import { getArticles, getFeed, getTags } from '../../../services/conduit';
 import { store } from '../../../state/store';
 import { useStoreWithInitializer } from '../../../state/storeHooks';
+import { FeedFilters } from '../../../types/article';
 import { ArticlesViewer } from '../../ArticlesViewer/ArticlesViewer';
 import { changePage, loadArticles, startLoadingArticles } from '../../ArticlesViewer/ArticlesViewer.slice';
-import { loadTags, startLoadingTags } from './Home.slice';
+import { changeTab, loadTags, startLoadingTags } from './Home.slice';
 
 export function Home() {
-  const { tags } = useStoreWithInitializer(({ home }) => home, load);
+  const { tags, selectedTab } = useStoreWithInitializer(({ home }) => home, load);
 
   return (
     <div className='home-page'>
@@ -17,9 +18,10 @@ export function Home() {
           <div className='col-md-9'>
             <ArticlesViewer
               toggleClassName='feed-toggle'
-              selectedTab='Global Feed'
-              tabs={['Global Feed']}
+              selectedTab={selectedTab}
+              tabs={buildTabsNames(selectedTab)}
               onPageChange={onPageChange}
+              onTabChange={onTabChange}
             />
           </div>
 
@@ -34,7 +36,11 @@ async function load() {
   store.dispatch(startLoadingArticles());
   store.dispatch(startLoadingTags());
 
-  const multipleArticles = await getArticles();
+  if (store.getState().app.user.isSome()) {
+    store.dispatch(changeTab('Your Feed'));
+  }
+
+  const multipleArticles = await getFeedOrGlobalArticles();
   store.dispatch(loadArticles(multipleArticles));
 
   const tagsResult = await getTags();
@@ -52,11 +58,37 @@ function renderBanner() {
   );
 }
 
+function buildTabsNames(selectedTab: string) {
+  const { user } = store.getState().app;
+
+  return Array.from(new Set([...(user.isSome() ? ['Your Feed'] : []), 'Global Feed', selectedTab]));
+}
+
 async function onPageChange(index: number) {
   store.dispatch(changePage(index));
 
-  const multipleArticles = await getArticles({ offset: (index - 1) * 10 });
+  const multipleArticles = await getFeedOrGlobalArticles({ offset: (index - 1) * 10 });
   store.dispatch(loadArticles(multipleArticles));
+}
+
+async function onTabChange(tab: string) {
+  store.dispatch(changeTab(tab));
+  store.dispatch(startLoadingArticles());
+
+  const multipleArticles = await getFeedOrGlobalArticles();
+  store.dispatch(loadArticles(multipleArticles));
+}
+
+async function getFeedOrGlobalArticles(filters: FeedFilters = {}) {
+  const { selectedTab } = store.getState().home;
+  const finalFilters = {
+    ...filters,
+    tag: selectedTab.slice(2),
+  };
+
+  return await (selectedTab === 'Your Feed' ? getFeed : getArticles)(
+    !selectedTab.startsWith('#') ? filters : finalFilters
+  );
 }
 
 function renderSidebar(tags: Option<string[]>) {
@@ -70,7 +102,7 @@ function renderSidebar(tags: Option<string[]>) {
           <div className='tag-list'>
             {' '}
             {tags.map((tag) => (
-              <a key={tag} href='' className='tag-pill tag-default'>
+              <a key={tag} href='#' className='tag-pill tag-default' onClick={() => onTabChange(`# ${tag}`)}>
                 {tag}
               </a>
             ))}{' '}

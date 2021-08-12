@@ -7,6 +7,7 @@ import {
   articleDecoder,
   ArticleForEditor,
   ArticlesFilters,
+  FeedFilters,
   MultipleArticles,
   multipleArticlesDecoder,
 } from '../types/article';
@@ -111,4 +112,13 @@ export async function followUser(username: string): Promise<Profile> {
 export async function unfollowUser(username: string): Promise<Profile> {
   const { data } = await axios.delete(`profiles/${username}/follow`);
   return guard(object({ profile: profileDecoder }))(data).profile;
+}
+
+export async function getFeed(filters: FeedFilters = {}): Promise<MultipleArticles> {
+  const finalFilters: ArticlesFilters = {
+    limit: 10,
+    offset: 0,
+    ...filters,
+  };
+  return guard(multipleArticlesDecoder)((await axios.get(`articles/feed?${objectToQueryString(finalFilters)}`)).data);
 }
