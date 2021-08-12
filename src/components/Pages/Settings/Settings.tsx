@@ -8,6 +8,7 @@ import { buildGenericFormField } from '../../../types/genericFormField';
 import { loadUser, logout } from '../../App/App.slice';
 import { GenericForm } from '../../GenericForm/GenericForm';
 import { SettingsState, startUpdate, updateErrors, updateField } from './Settings.slice';
+import { ContainerPage } from '../../ContainerPage/ContainerPage';
 
 export interface SettingsField {
   name: keyof UserSettings;
@@ -21,39 +22,37 @@ export function Settings() {
 
   return (
     <div className='settings-page'>
-      <div className='container page'>
-        <div className='row'>
-          <div className='col-md-6 offset-md-3 col-xs-12'>
-            <h1 className='text-xs-center'>Your Settings</h1>
+      <ContainerPage>
+        <div className='col-md-6 offset-md-3 col-xs-12'>
+          <h1 className='text-xs-center'>Your Settings</h1>
 
-            <GenericForm
-              disabled={updating}
-              formObject={{ ...user }}
-              submitButtonText='Update Settings'
-              errors={errors}
-              onChange={onUpdateField}
-              onSubmit={onUpdateSettings(user)}
-              fields={[
-                buildGenericFormField({ name: 'image', placeholder: 'URL of profile picture' }),
-                buildGenericFormField({ name: 'username', placeholder: 'Your Name' }),
-                buildGenericFormField({
-                  name: 'bio',
-                  placeholder: 'Short bio about you',
-                  rows: 8,
-                  fieldType: 'textarea',
-                }),
-                buildGenericFormField({ name: 'email', placeholder: 'Email' }),
-                buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
-              ]}
-            />
+          <GenericForm
+            disabled={updating}
+            formObject={{ ...user }}
+            submitButtonText='Update Settings'
+            errors={errors}
+            onChange={onUpdateField}
+            onSubmit={onUpdateSettings(user)}
+            fields={[
+              buildGenericFormField({ name: 'image', placeholder: 'URL of profile picture' }),
+              buildGenericFormField({ name: 'username', placeholder: 'Your Name' }),
+              buildGenericFormField({
+                name: 'bio',
+                placeholder: 'Short bio about you',
+                rows: 8,
+                fieldType: 'textarea',
+              }),
+              buildGenericFormField({ name: 'email', placeholder: 'Email' }),
+              buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
+            ]}
+          />
 
-            <hr />
-            <button className='btn btn-outline-danger' onClick={_logout}>
-              Or click here to logout.
-            </button>
-          </div>
+          <hr />
+          <button className='btn btn-outline-danger' onClick={_logout}>
+            Or click here to logout.
+          </button>
         </div>
-      </div>
+      </ContainerPage>
     </div>
   );
 }

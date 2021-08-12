@@ -5,6 +5,7 @@ import { useStoreWithInitializer } from '../../../state/storeHooks';
 import { FeedFilters } from '../../../types/article';
 import { ArticlesViewer } from '../../ArticlesViewer/ArticlesViewer';
 import { changePage, loadArticles, startLoadingArticles } from '../../ArticlesViewer/ArticlesViewer.slice';
+import { ContainerPage } from '../../ContainerPage/ContainerPage';
 import { changeTab, loadTags, startLoadingTags } from './Home.slice';
 
 export function Home() {
@@ -13,21 +14,19 @@ export function Home() {
   return (
     <div className='home-page'>
       {renderBanner()}
-      <div className='container page'>
-        <div className='row'>
-          <div className='col-md-9'>
-            <ArticlesViewer
-              toggleClassName='feed-toggle'
-              selectedTab={selectedTab}
-              tabs={buildTabsNames(selectedTab)}
-              onPageChange={onPageChange}
-              onTabChange={onTabChange}
-            />
-          </div>
-
-          <div className='col-md-3'>{renderSidebar(tags)}</div>
+      <ContainerPage>
+        <div className='col-md-9'>
+          <ArticlesViewer
+            toggleClassName='feed-toggle'
+            selectedTab={selectedTab}
+            tabs={buildTabsNames(selectedTab)}
+            onPageChange={onPageChange}
+            onTabChange={onTabChange}
+          />
         </div>
-      </div>
+
+        <div className='col-md-3'>{renderSidebar(tags)}</div>
+      </ContainerPage>
     </div>
   );
 }
