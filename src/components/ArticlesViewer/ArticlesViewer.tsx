@@ -47,21 +47,27 @@ function ArticlesTabSet({
     <div className={toggleClassName}>
       <ul className='nav nav-pills outline-active'>
         {tabs.map((tab) => (
-          <li key={tab} className='nav-item'>
-            <a
-              className={classObjectToClassName({ 'nav-link': true, active: tab === selectedTab })}
-              href='#'
-              onClick={(ev) => {
-                ev.preventDefault();
-                onTabChange && onTabChange(tab);
-              }}
-            >
-              {tab}
-            </a>
-          </li>
+          <Tab key={tab} tab={tab} active={tab === selectedTab} onClick={() => onTabChange && onTabChange(tab)} />
         ))}
       </ul>
     </div>
+  );
+}
+
+function Tab({ tab, active, onClick }: { tab: string; active: boolean; onClick: () => void }) {
+  return (
+    <li className='nav-item'>
+      <a
+        className={classObjectToClassName({ 'nav-link': true, active })}
+        href='#'
+        onClick={(ev) => {
+          ev.preventDefault();
+          onClick();
+        }}
+      >
+        {tab}
+      </a>
+    </li>
   );
 }
 
