@@ -80,6 +80,11 @@ function ArticleList({ articles }: { articles: ArticleViewerState['articles'] })
     ),
     some: (articles) => (
       <Fragment>
+        {articles.length === 0 && (
+          <div className='article-preview' key={1}>
+            No articles are here... yet.
+          </div>
+        )}
         {articles.map(({ article, isSubmitting }, index) => (
           <ArticlePreview
             key={article.slug}

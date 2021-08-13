@@ -70,6 +70,25 @@ it('Should load articles', async () => {
   expect(store.getState().home.selectedTab).toMatch('Global Feed');
 });
 
+it('Should show message if there are no articles', async () => {
+  mockedGetArticles.mockResolvedValueOnce({
+    articles: [],
+    articlesCount: 0,
+  });
+  mockedGetTags.mockResolvedValueOnce({ tags: [] });
+
+  await act(async () => {
+    await render(
+      <MemoryRouter>
+        <MemoryRouter>
+          <Home />
+        </MemoryRouter>
+      </MemoryRouter>
+    );
+  });
+  expect(screen.getByText('No articles are here... yet.')).toBeInTheDocument();
+});
+
 it('Should load feed articles if user is logged in', async () => {
   mockedGetFeed.mockResolvedValueOnce({
     articles: [
