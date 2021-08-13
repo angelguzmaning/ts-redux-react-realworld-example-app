@@ -78,11 +78,15 @@ export function ArticlePage() {
 async function onLoad(slug: string) {
   store.dispatch(initializeArticlePage());
 
-  const article = await getArticle(slug);
-  store.dispatch(loadArticle(article));
+  try {
+    const article = await getArticle(slug);
+    store.dispatch(loadArticle(article));
 
-  const comments = await getArticleComments(slug);
-  store.dispatch(loadComments(comments));
+    const comments = await getArticleComments(slug);
+    store.dispatch(loadComments(comments));
+  } catch {
+    redirect('');
+  }
 }
 
 function ArticlePageBanner(props: { article: Article; metaSection: MetaSectionState; user: Option<User> }) {

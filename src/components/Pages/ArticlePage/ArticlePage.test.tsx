@@ -79,6 +79,15 @@ describe('For guest', () => {
     });
   });
 
+  it('Should redirect to home if it fails to load article', async () => {
+    redirect('article/something');
+    mockedGetArticle.mockRejectedValueOnce({});
+    mockedGetArticleComments.mockResolvedValueOnce([]);
+    await renderWithPath('sample-slug');
+
+    expect(location.hash === '#/').toBeTruthy();
+  });
+
   it('Should render article', async () => {
     mockedGetArticle.mockResolvedValueOnce({
       ...defaultArticle,
