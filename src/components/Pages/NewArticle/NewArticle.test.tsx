@@ -2,7 +2,7 @@ import { Err, Ok } from '@hqoss/monads';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { createArticle } from '../../../services/conduit';
 import { store } from '../../../state/store';
-import { initialize } from '../../ArticleEditor/ArticleEditor.slice';
+import { initializeEditor } from '../../ArticleEditor/ArticleEditor.slice';
 import { NewArticle } from './NewArticle';
 
 jest.mock('../../../services/conduit.ts');
@@ -11,7 +11,7 @@ const mockedCreateArticle = createArticle as jest.Mock<ReturnType<typeof createA
 
 beforeEach(() => {
   act(() => {
-    store.dispatch(initialize());
+    store.dispatch(initializeEditor());
     render(<NewArticle />);
   });
 });

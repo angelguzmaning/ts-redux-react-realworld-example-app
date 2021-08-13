@@ -1,6 +1,6 @@
 import { store } from '../../../state/store';
 import { Settings } from './Settings';
-import { initialize, startUpdate, updateErrors } from './Settings.slice';
+import { initializeSettings, startUpdate, updateErrors } from './Settings.slice';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { updateSettings } from '../../../services/conduit';
 import { Err, Ok } from '@hqoss/monads';
@@ -14,7 +14,7 @@ const mockedUpdateSettings = updateSettings as jest.Mock<ReturnType<typeof updat
 
 beforeEach(() => {
   act(() => {
-    store.dispatch(initialize());
+    store.dispatch(initializeSettings());
     render(<Settings />);
   });
 });
@@ -58,7 +58,7 @@ it('Should disable fields during update and enabled afterwards with errors', asy
   expect(screen.getByPlaceholderText('Password')).toBeDisabled();
 
   await act(async () => {
-    store.dispatch(initialize());
+    store.dispatch(initializeSettings());
   });
 
   await act(async () => {

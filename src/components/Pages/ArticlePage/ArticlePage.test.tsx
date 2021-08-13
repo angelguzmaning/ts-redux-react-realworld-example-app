@@ -14,7 +14,7 @@ import {
 import { store } from '../../../state/store';
 import { Comment } from '../../../types/comment';
 import { redirect } from '../../../types/location';
-import { initialize, loadUser } from '../../App/App.slice';
+import { initializeApp, loadUser } from '../../App/App.slice';
 import { ArticlePage } from './ArticlePage';
 
 jest.mock('../../../services/conduit.ts');
@@ -75,7 +75,7 @@ async function renderWithPath(slug: string) {
 describe('For guest', () => {
   beforeEach(async () => {
     await act(async () => {
-      store.dispatch(initialize());
+      store.dispatch(initializeApp());
     });
   });
 

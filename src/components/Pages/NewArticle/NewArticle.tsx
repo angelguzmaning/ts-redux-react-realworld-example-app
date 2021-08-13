@@ -2,11 +2,11 @@ import { FormEvent, useEffect } from 'react';
 import { createArticle } from '../../../services/conduit';
 import { store } from '../../../state/store';
 import { ArticleEditor } from '../../ArticleEditor/ArticleEditor';
-import { initialize, startSubmitting, updateErrors } from '../../ArticleEditor/ArticleEditor.slice';
+import { initializeEditor, startSubmitting, updateErrors } from '../../ArticleEditor/ArticleEditor.slice';
 
 export function NewArticle() {
   useEffect(() => {
-    store.dispatch(initialize());
+    store.dispatch(initializeEditor());
   }, [null]);
 
   return <ArticleEditor onSubmit={onSubmit} />;

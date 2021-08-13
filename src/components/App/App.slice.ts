@@ -16,7 +16,7 @@ const slice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    initialize: () => initialState,
+    initializeApp: () => initialState,
     loadUser: (state, { payload: user }: PayloadAction<User>) => {
       state.user = Some(user);
       state.loading = false;
@@ -30,6 +30,6 @@ const slice = createSlice({
   },
 });
 
-export const { loadUser, logout, endLoad, initialize } = slice.actions;
+export const { loadUser, logout, endLoad, initializeApp } = slice.actions;
 
 export default slice.reducer;

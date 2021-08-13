@@ -2,13 +2,16 @@ import { dispatchOnCall, store } from '../../../state/store';
 import { useStoreWithInitializer } from '../../../state/storeHooks';
 import { buildGenericFormField } from '../../../types/genericFormField';
 import { GenericForm } from '../../GenericForm/GenericForm';
-import { initialize, RegisterState, startSigningUp, updateErrors, updateField } from './Register.slice';
+import { initializeRegister, RegisterState, startSigningUp, updateErrors, updateField } from './Register.slice';
 import { loadUserIntoApp, UserForRegistration } from '../../../types/user';
 import { signUp } from '../../../services/conduit';
 import { ContainerPage } from '../../ContainerPage/ContainerPage';
 
 export function Register() {
-  const { errors, signingUp, user } = useStoreWithInitializer(({ register }) => register, dispatchOnCall(initialize()));
+  const { errors, signingUp, user } = useStoreWithInitializer(
+    ({ register }) => register,
+    dispatchOnCall(initializeRegister())
+  );
 
   return (
     <div className='auth-page'>

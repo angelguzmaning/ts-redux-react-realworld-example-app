@@ -3,13 +3,13 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { signUp } from '../../../services/conduit';
 import { store } from '../../../state/store';
 import { Register } from './Register';
-import { initialize } from './Register.slice';
+import { initializeRegister } from './Register.slice';
 
 jest.mock('../../../services/conduit.ts');
 
 beforeEach(() => {
   act(() => {
-    store.dispatch(initialize());
+    store.dispatch(initializeRegister());
     render(<Register />);
   });
 });

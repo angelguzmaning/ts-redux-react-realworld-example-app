@@ -5,11 +5,11 @@ import { useStoreWithInitializer } from '../../../state/storeHooks';
 import { loadUserIntoApp } from '../../../types/user';
 import { buildGenericFormField } from '../../../types/genericFormField';
 import { GenericForm } from '../../GenericForm/GenericForm';
-import { initialize, LoginState, startLoginIn, updateErrors, updateField } from './Login.slice';
+import { initializeLogin, LoginState, startLoginIn, updateErrors, updateField } from './Login.slice';
 import { ContainerPage } from '../../ContainerPage/ContainerPage';
 
 export function Login() {
-  const { errors, loginIn, user } = useStoreWithInitializer(({ login }) => login, dispatchOnCall(initialize()));
+  const { errors, loginIn, user } = useStoreWithInitializer(({ login }) => login, dispatchOnCall(initializeLogin()));
 
   return (
     <div className='auth-page'>

@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 import { store } from '../../state/store';
-import { initialize, loadUser } from '../App/App.slice';
+import { initializeApp, loadUser } from '../App/App.slice';
 import { Header } from './Header';
 
 it('Should render', () => {
@@ -10,7 +10,7 @@ it('Should render', () => {
 describe('Header for guest', () => {
   beforeAll(() => {
     act(() => {
-      store.dispatch(initialize);
+      store.dispatch(initializeApp);
     });
   });
 

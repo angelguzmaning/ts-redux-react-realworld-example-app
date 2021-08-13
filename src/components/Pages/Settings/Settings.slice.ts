@@ -20,7 +20,7 @@ const slice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    initialize: () => initialState,
+    initializeSettings: () => initialState,
     updateField: (state, { payload: { name, value } }: PayloadAction<{ name: keyof UserSettings; value: string }>) => {
       state.user[name] = value;
     },
@@ -41,6 +41,6 @@ const slice = createSlice({
   },
 });
 
-export const { initialize, updateField, updateErrors, startUpdate } = slice.actions;
+export const { initializeSettings, updateField, updateErrors, startUpdate } = slice.actions;
 
 export default slice.reducer;

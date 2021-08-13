@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getArticles, getFeed, getTags, getUser } from '../../services/conduit';
 import { store } from '../../state/store';
 import { App } from './App';
-import { initialize } from './App.slice';
+import { initializeApp } from './App.slice';
 
 jest.mock('../../services/conduit');
 jest.mock('axios');
@@ -15,7 +15,7 @@ const mockedGetUser = getUser as jest.Mock<ReturnType<typeof getUser>>;
 
 it('Should render home', async () => {
   act(() => {
-    store.dispatch(initialize());
+    store.dispatch(initializeApp());
   });
   mockedGetArticles.mockResolvedValueOnce({
     articles: [],
@@ -36,7 +36,7 @@ it('Should render home', async () => {
 
 it('Should get user if token is on storage', async () => {
   act(() => {
-    store.dispatch(initialize());
+    store.dispatch(initializeApp());
   });
   mockedGetUser.mockResolvedValueOnce({
     email: 'jake@jake.jake',
@@ -68,7 +68,7 @@ it('Should get user if token is on storage', async () => {
 
 it('Should end load if get user fails', async () => {
   await act(async () => {
-    store.dispatch(initialize());
+    store.dispatch(initializeApp());
   });
   mockedGetUser.mockRejectedValueOnce({});
   mockedGetArticles.mockResolvedValueOnce({

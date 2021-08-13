@@ -23,7 +23,7 @@ const slice = createSlice({
   name: 'login',
   initialState,
   reducers: {
-    initialize: () => initialState,
+    initializeLogin: () => initialState,
     updateField: (
       state,
       { payload: { name, value } }: PayloadAction<{ name: keyof LoginState['user']; value: string }>
@@ -40,6 +40,6 @@ const slice = createSlice({
   },
 });
 
-export const { initialize, updateField, updateErrors, startLoginIn } = slice.actions;
+export const { initializeLogin, updateField, updateErrors, startLoginIn } = slice.actions;
 
 export default slice.reducer;

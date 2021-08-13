@@ -5,7 +5,7 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import { getArticle, updateArticle } from '../../../services/conduit';
 import { store } from '../../../state/store';
 import { loadUser } from '../../App/App.slice';
-import { initialize } from '../../ArticleEditor/ArticleEditor.slice';
+import { initializeEditor } from '../../ArticleEditor/ArticleEditor.slice';
 import { EditArticle } from './EditArticle';
 
 jest.mock('../../../services/conduit.ts');
@@ -42,7 +42,7 @@ const defaultUser = {
 beforeEach(async () => {
   await act(async () => {
     store.dispatch(loadUser(defaultUser));
-    store.dispatch(initialize());
+    store.dispatch(initializeEditor());
   });
 });
 

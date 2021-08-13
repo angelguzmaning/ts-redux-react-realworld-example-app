@@ -3,7 +3,7 @@ import { Link, MemoryRouter, Route } from 'react-router-dom';
 import { followUser, getArticles, getProfile, unfollowUser } from '../../../services/conduit';
 import { store } from '../../../state/store';
 import { Profile } from '../../../types/profile';
-import { initialize, loadUser } from '../../App/App.slice';
+import { initializeApp, loadUser } from '../../App/App.slice';
 import { ProfilePage } from './ProfilePage';
 
 jest.mock('../../../services/conduit.ts');
@@ -107,7 +107,7 @@ it('Should go to sign up page if a guest tries to follow', async () => {
   mockedGetArticles.mockResolvedValueOnce({ articles: [], articlesCount: 0 });
 
   await act(async () => {
-    store.dispatch(initialize());
+    store.dispatch(initializeApp());
     await renderWithPath('something');
   });
 

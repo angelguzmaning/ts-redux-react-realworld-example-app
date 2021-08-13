@@ -23,7 +23,7 @@ const slice = createSlice({
   name: 'editor',
   initialState,
   reducers: {
-    initialize: () => initialState,
+    initializeEditor: () => initialState,
     updateField: (
       state,
       { payload: { name, value } }: PayloadAction<{ name: keyof EditorState['article'] | 'tag'; value: string }>
@@ -60,6 +60,7 @@ const slice = createSlice({
   },
 });
 
-export const { initialize, updateField, startSubmitting, addTag, removeTag, updateErrors, loadArticle } = slice.actions;
+export const { initializeEditor, updateField, startSubmitting, addTag, removeTag, updateErrors, loadArticle } =
+  slice.actions;
 
 export default slice.reducer;

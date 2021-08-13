@@ -4,7 +4,7 @@ import { getArticle, updateArticle } from '../../../services/conduit';
 import { store } from '../../../state/store';
 import { useStore } from '../../../state/storeHooks';
 import { ArticleEditor } from '../../ArticleEditor/ArticleEditor';
-import { initialize, loadArticle, startSubmitting, updateErrors } from '../../ArticleEditor/ArticleEditor.slice';
+import { initializeEditor, loadArticle, startSubmitting, updateErrors } from '../../ArticleEditor/ArticleEditor.slice';
 
 export function EditArticle() {
   const { slug } = useParams<{ slug: string }>();
@@ -18,7 +18,7 @@ export function EditArticle() {
 }
 
 async function _loadArticle(slug: string) {
-  store.dispatch(initialize());
+  store.dispatch(initializeEditor());
   try {
     const { title, description, body, tagList, author } = await getArticle(slug);
 

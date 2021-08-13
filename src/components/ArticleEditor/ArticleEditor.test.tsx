@@ -1,11 +1,11 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { store } from '../../state/store';
 import { ArticleEditor } from './ArticleEditor';
-import { addTag, initialize, updateField } from './ArticleEditor.slice';
+import { addTag, initializeEditor, updateField } from './ArticleEditor.slice';
 
 beforeEach(() => {
   act(() => {
-    store.dispatch(initialize());
+    store.dispatch(initializeEditor());
     render(<ArticleEditor onSubmit={(ev) => ev.preventDefault()} />);
   });
 });

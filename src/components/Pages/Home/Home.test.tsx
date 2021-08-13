@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { favoriteArticle, getArticles, getFeed, getTags, unfavoriteArticle } from '../../../services/conduit';
 import { store } from '../../../state/store';
-import { initialize, loadUser } from '../../App/App.slice';
+import { initializeApp, loadUser } from '../../App/App.slice';
 import { Home } from './Home';
 import { changeTab } from './Home.slice';
 
@@ -34,7 +34,7 @@ const defaultArticle = {
 
 beforeEach(async () => {
   await act(async () => {
-    store.dispatch(initialize());
+    store.dispatch(initializeApp());
     store.dispatch(changeTab('Global Feed'));
   });
 });
