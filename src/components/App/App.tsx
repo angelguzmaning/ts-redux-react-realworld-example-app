@@ -14,6 +14,7 @@ import { Register } from '../Pages/Register/Register';
 import { Settings } from '../Pages/Settings/Settings';
 import { endLoad, loadUser } from './App.slice';
 import { ProfilePage } from '../Pages/ProfilePage/ProfilePage';
+import { ArticlePage } from '../Pages/ArticlePage/ArticlePage';
 
 export function App() {
   const { loading, user } = useStoreWithInitializer(({ app }) => app, load);
@@ -43,6 +44,9 @@ export function App() {
             </UserOnlyRoute>
             <Route path='/profile/:username'>
               <ProfilePage />
+            </Route>
+            <Route path='/article/:slug'>
+              <ArticlePage />
             </Route>
             <Route exact path='/'>
               <Home />

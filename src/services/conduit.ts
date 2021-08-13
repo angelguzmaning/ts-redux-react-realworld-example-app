@@ -11,6 +11,7 @@ import {
   MultipleArticles,
   multipleArticlesDecoder,
 } from '../types/article';
+import { Comment, commentDecoder } from '../types/comment';
 import { GenericErrors, genericErrorsDecoder } from '../types/error';
 import { objectToQueryString } from '../types/object';
 import { Profile, profileDecoder } from '../types/profile';
@@ -121,4 +122,22 @@ export async function getFeed(filters: FeedFilters = {}): Promise<MultipleArticl
     ...filters,
   };
   return guard(multipleArticlesDecoder)((await axios.get(`articles/feed?${objectToQueryString(finalFilters)}`)).data);
+}
+
+export async function getArticleComments(slug: string): Promise<Comment[]> {
+  const { data } = await axios.get(`articles/${slug}/comments`);
+  return guard(object({ comments: array(commentDecoder) }))(data).comments;
+}
+
+export async function deleteComment(slug: string, commentId: number): Promise<void> {
+  await axios.delete(`articles/${slug}/comments/${commentId}`);
+}
+
+export async function createComment(slug: string, body: string): Promise<Comment> {
+  const { data } = await axios.post(`articles/${slug}/comments`, { comment: { body } });
+  return guard(object({ comment: commentDecoder }))(data).comment;
+}
+
+export async function deleteArticle(slug: string): Promise<void> {
+  await axios.delete(`articles/${slug}`);
 }

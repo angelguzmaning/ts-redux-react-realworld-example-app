@@ -7,11 +7,12 @@ import register from '../components/Pages/Register/Register.slice';
 import editor from '../components/ArticleEditor/ArticleEditor.slice';
 import articleViewer from '../components/ArticlesViewer/ArticlesViewer.slice';
 import profile from '../components/Pages/ProfilePage/ProfilePage.slice';
+import articlePage from '../components/Pages/ArticlePage/ArticlePage.slice';
 
 const middlewareConfiguration = { serializableCheck: false };
 
 export const store = configureStore({
-  reducer: { app, home, login, settings, register, editor, articleViewer, profile },
+  reducer: { app, home, login, settings, register, editor, articleViewer, profile, articlePage },
   devTools: {
     name: 'Conduit',
   },

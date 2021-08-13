@@ -1,9 +1,13 @@
 import axios, { AxiosStatic } from 'axios';
 import {
   createArticle,
+  createComment,
+  deleteArticle,
+  deleteComment,
   favoriteArticle,
   followUser,
   getArticle,
+  getArticleComments,
   getArticles,
   getFeed,
   getProfile,
@@ -38,6 +42,20 @@ const defaultArticle = {
     following: false,
   },
 };
+
+const defaultComment = {
+  id: 1,
+  createdAt: '2016-02-18T03:22:56.637Z',
+  updatedAt: '2016-02-18T03:22:56.637Z',
+  body: 'It takes a Jacobian',
+  author: {
+    username: 'jake',
+    bio: 'I work at statefarm',
+    image: 'https://i.stack.imgur.com/xHWG8.jpg',
+    following: false,
+  },
+};
+
 it('Should get articles', async () => {
   mockedAxios.get.mockResolvedValueOnce({
     data: {
@@ -366,4 +384,35 @@ it('Should get feed', async () => {
   const result = await getFeed();
   expect(result.articles.length).toBe(2);
   expect(result.articlesCount).toBe(2);
+});
+
+it('Should get comments', async () => {
+  mockedAxios.get.mockResolvedValueOnce({
+    data: {
+      comments: [defaultComment, defaultComment, defaultComment],
+    },
+  });
+  const result = await getArticleComments('the slug');
+  expect(result).toHaveLength(3);
+  expect(mockedAxios.get.mock.calls).toHaveLength(1);
+});
+
+it('Should delete comment', async () => {
+  mockedAxios.delete.mockResolvedValueOnce({});
+  await deleteComment('the slug', 123);
+  expect(mockedAxios.delete.mock.calls).toHaveLength(1);
+});
+
+it('Should add comment', async () => {
+  mockedAxios.post.mockResolvedValueOnce({ data: { comment: defaultComment } });
+  await createComment('the slug', 'The body');
+  expect(mockedAxios.post.mock.calls).toHaveLength(1);
+  expect(mockedAxios.post.mock.calls[0][1]).toHaveProperty('comment');
+  expect(mockedAxios.post.mock.calls[0][1].comment).toHaveProperty('body', 'The body');
+});
+
+it('Should delete article', async () => {
+  mockedAxios.delete.mockResolvedValueOnce({});
+  await deleteArticle('the slug', 123);
+  expect(mockedAxios.delete.mock.calls).toHaveLength(1);
 });

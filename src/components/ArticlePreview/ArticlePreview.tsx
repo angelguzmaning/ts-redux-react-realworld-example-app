@@ -51,7 +51,7 @@ export function ArticlePreview({
   );
 }
 
-function TagList({ tagList }: { tagList: string[] }) {
+export function TagList({ tagList }: { tagList: string[] }) {
   return (
     <ul className='tag-list'>
       {tagList.map((tag) => (
