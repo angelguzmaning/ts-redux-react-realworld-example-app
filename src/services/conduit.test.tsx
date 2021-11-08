@@ -101,7 +101,7 @@ it('Should get tags', async () => {
 });
 
 it('Should send correct login object', async () => {
-  mockedAxios.post.mockRejectedValueOnce({ data: { errors: { x: ['y', 'z'] } } });
+  mockedAxios.post.mockRejectedValueOnce({ response: { data: { errors: { x: ['y', 'z'] } } } });
 
   await login('thisIsUser', 'thisIsPassword');
 
@@ -113,7 +113,7 @@ it('Should send correct login object', async () => {
 });
 
 it('Should get login errors', async () => {
-  mockedAxios.post.mockRejectedValueOnce({ data: { errors: { x: ['y', 'z'] } } });
+  mockedAxios.post.mockRejectedValueOnce({ response: { data: { errors: { x: ['y', 'z'] } } } });
 
   const result = await login('', '');
   result.match({

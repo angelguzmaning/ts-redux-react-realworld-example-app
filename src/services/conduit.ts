@@ -37,7 +37,7 @@ export async function login(email: string, password: string): Promise<Result<Use
     const { data } = await axios.post('users/login', { user: { email, password } });
 
     return Ok(guard(object({ user: userDecoder }))(data).user);
-  } catch ({ data }) {
+  } catch ({ response: { data } }) {
     return Err(guard(object({ errors: genericErrorsDecoder }))(data).errors);
   }
 }
