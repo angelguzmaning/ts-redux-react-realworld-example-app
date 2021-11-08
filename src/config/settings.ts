@@ -1,3 +1,3 @@
 export default {
-  baseApiUrl: 'https://conduit.productionready.io/api/',
+  baseApiUrl: 'https://api.realworld.io/api/',
 };

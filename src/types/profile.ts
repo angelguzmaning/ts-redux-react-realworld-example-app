@@ -1,4 +1,4 @@
-import { Decoder, string, nullable, boolean, object } from 'decoders';
+import { Decoder, string, nullable, boolean, object, hardcoded, either } from 'decoders';
 import { PublicUser } from './user';
 
 export interface Profile extends PublicUser {
@@ -9,5 +9,5 @@ export const profileDecoder: Decoder<Profile> = object({
   username: string,
   bio: nullable(string),
   image: nullable(string),
-  following: boolean,
+  following: either(boolean, hardcoded(false)),
 });
