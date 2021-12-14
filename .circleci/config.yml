@@ -1,0 +1,45 @@
+version: 2.1
+
+workflows:
+  ci-cd:  
+    jobs:
+      - build-docker-image:
+          context: moonwalkers
+
+commands:
+  prepare-gcp:
+    steps:
+      - gcp-cli/install:
+          version: 366.0.0
+      - gcp-cli/initialize:
+          gcloud-service-key: GCLOUD_SERVICE_KEY
+          google-compute-region: GCLOUD_COMPUTE_REGION
+          google-compute-zone: GCLOUD_COMPUTE_ZONE
+          google-project-id: GCLOUD_PROJECT_ID
+
+jobs:
+  build-docker-image:
+    docker: 
+      - image: cimg/base:2021.11
+    steps:
+      - checkout
+      - setup_remote_docker
+      - prepare-gcp
+      - run:
+          name: Configure Artifact Registry
+          command: |
+            gcloud auth configure-docker us-east1-docker.pkg.dev
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t realworld-app .
+      - deploy:
+          name: Tag and Push Docker image
+          command: |
+            docker tag realworld-app ${GCP_REGISTRY_PATH}/realworld-app:${CIRCLE_SHA1}
+            docker tag ${GCP_REGISTRY_PATH}/realworld-app:${CIRCLE_SHA1} ${GCP_REGISTRY_PATH}/realworld-app:latest
+            docker push ${GCP_REGISTRY_PATH}/realworld-app:${CIRCLE_SHA1}
+            docker push ${GCP_REGISTRY_PATH}/realworld-app:latest
+
+orbs: 
+  gcp-cli: circleci/gcp-cli@2.4.0

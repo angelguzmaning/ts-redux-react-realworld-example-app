@@ -1,18 +1,15 @@
-FROM node:13.12.0-alpine
-
+# build environment
+FROM node:13.12.0-alpine as build
 WORKDIR /src
-
 ENV PATH /node_modules/.bin:$PATH
-
-# install app dependencies
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm install --silent
-
-# The actual app code
+RUN npm ci --silent
 COPY . ./
+RUN npm run build
 
-EXPOSE 3000
-
-# start app
-CMD ["npm", "start"]
+# production environment
+FROM nginx:stable-alpine
+COPY --from=build /src/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
