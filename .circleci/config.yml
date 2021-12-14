@@ -20,7 +20,7 @@ commands:
 jobs:
   build-docker-image:
     docker: 
-      - image: cimg/base:2021.11
+      - image: cimg/node:16.13.1
     steps:
       - checkout
       - setup_remote_docker
