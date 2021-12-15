@@ -40,6 +40,22 @@ jobs:
             docker tag ${GCP_REGISTRY_PATH}/realworld-app:${CIRCLE_SHA1} ${GCP_REGISTRY_PATH}/realworld-app:latest
             docker push ${GCP_REGISTRY_PATH}/realworld-app:${CIRCLE_SHA1}
             docker push ${GCP_REGISTRY_PATH}/realworld-app:latest
-
+  deploy-helm-chart:
+    docker: 
+      - image: cimg/node:16.13.1
+    steps:
+      - checkout
+      - prepare-gcp
+      - run:
+          name: Connect to GKE cluster
+          command: |
+            gcloud container clusters get-credentials gke-ycit021-devops-project --region us-east1
+      - helm/install-helm-client:
+          version: "v3.0.0"
+      - run:
+          name: Connect to GKE cluster
+          command: |
+            helm install --generate-name ./realworld
 orbs: 
   gcp-cli: circleci/gcp-cli@2.4.0
+  helm: circleci/helm@1.2.0
