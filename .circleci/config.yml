@@ -7,8 +7,8 @@ workflows:
           context: moonwalkers
       - deploy-helm-chart:
           context: moonwalkers
-          requires: 
-            - build-docker-image
+          #requires: 
+          #  - build-docker-image
 
 commands:
   prepare-gcp:
@@ -36,7 +36,7 @@ commands:
 jobs:
   build-docker-image:
     docker: 
-      - image: cimg/node:16.13.1
+      - image: cimg/base:2021.11
     steps:
       - checkout
       - setup_remote_docker
@@ -55,7 +55,7 @@ jobs:
             docker push ${GCP_REGISTRY_PATH}/realworld-app:latest
   deploy-helm-chart:
     docker: 
-      - image: cimg/node:16.13.1
+      - image: cimg/base:2021.11
     steps:
       - checkout
       - prepare-gcp
@@ -64,9 +64,9 @@ jobs:
           version: "v3.0.0"
       - configure-artifact-registry
       - run:
-          name: Install helm chart
+          name: Upgrade helm chart
           command: |
-            helm install --generate-name ./realworld
+            helm upgrade realworld ./realworld
 orbs: 
   gcp-cli: circleci/gcp-cli@2.4.0
   helm: circleci/helm@1.2.0
