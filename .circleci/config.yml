@@ -5,6 +5,8 @@ workflows:
     jobs:
       - build-docker-image:
           context: moonwalkers
+      - deploy-helm-chart:
+          context: moonwalkers
 
 commands:
   prepare-gcp:
