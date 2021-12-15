@@ -1,10 +1,14 @@
 version: 2.1
 
+orbs: 
+  gcp-cli: circleci/gcp-cli@2.4.0
+  helm: circleci/helm@1.2.0
+
 workflows:
   ci-cd:  
     jobs:
-      - build-docker-image:
-          context: moonwalkers
+      #- build-docker-image:
+      #    context: moonwalkers
       - deploy-helm-chart:
           context: moonwalkers
           #requires: 
@@ -31,6 +35,7 @@ commands:
       - run:
           name: Connect to GKE cluster
           command: |
+            gcloud config set container/use_application_default_credentials true
             gcloud container clusters get-credentials gke-ycit021-devops-project --region us-east1
 
 jobs:
@@ -61,12 +66,9 @@ jobs:
       - prepare-gcp
       - connect-to-gke-cluster
       - helm/install-helm-client:
-          version: "v3.0.0"
+          version: "v3.7.2"
       - configure-artifact-registry
       - run:
           name: Upgrade helm chart
           command: |
             helm upgrade realworld ./realworld
-orbs: 
-  gcp-cli: circleci/gcp-cli@2.4.0
-  helm: circleci/helm@1.2.0
