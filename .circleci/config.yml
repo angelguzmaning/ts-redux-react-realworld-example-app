@@ -7,6 +7,8 @@ workflows:
           context: moonwalkers
       - deploy-helm-chart:
           context: moonwalkers
+          requires: 
+            - build-docker-image
 
 commands:
   prepare-gcp:
@@ -18,6 +20,18 @@ commands:
           google-compute-region: GCLOUD_COMPUTE_REGION
           google-compute-zone: GCLOUD_COMPUTE_ZONE
           google-project-id: GCLOUD_PROJECT_ID
+  configure-artifact-registry:
+    steps:
+      - run:
+          name: Configure Artifact Registry
+          command: |
+            gcloud auth configure-docker us-east1-docker.pkg.dev
+  connect-to-gke-cluster:
+    steps:
+      - run:
+          name: Connect to GKE cluster
+          command: |
+            gcloud container clusters get-credentials gke-ycit021-devops-project --region us-east1
 
 jobs:
   build-docker-image:
@@ -27,10 +41,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - prepare-gcp
-      - run:
-          name: Configure Artifact Registry
-          command: |
-            gcloud auth configure-docker us-east1-docker.pkg.dev
+      - configure-artifact-registry
       - run:
           name: Build Docker image
           command: |
@@ -48,14 +59,12 @@ jobs:
     steps:
       - checkout
       - prepare-gcp
-      - run:
-          name: Connect to GKE cluster
-          command: |
-            gcloud container clusters get-credentials gke-ycit021-devops-project --region us-east1
+      - connect-to-gke-cluster
       - helm/install-helm-client:
           version: "v3.0.0"
+      - configure-artifact-registry
       - run:
-          name: Connect to GKE cluster
+          name: Install helm chart
           command: |
             helm install --generate-name ./realworld
 orbs: 
