@@ -35,7 +35,6 @@ commands:
       - run:
           name: Connect to GKE cluster
           command: |
-            gcloud config set container/use_application_default_credentials true
             gcloud container clusters get-credentials gke-ycit021-devops-project --region us-east1
 
 jobs:
