@@ -70,7 +70,7 @@ jobs:
       - run: 
           name: Why can k8s not pull? 
           command: |
-            echo why
+            gcloud auth list
       - run:
           name: Upgrade helm chart
           command: |
