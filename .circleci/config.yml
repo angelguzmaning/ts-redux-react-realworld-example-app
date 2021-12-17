@@ -70,4 +70,6 @@ jobs:
       - run:
           name: Upgrade helm chart
           command: |
+            echo $GCLOUD_SERVICE_KEY > $HOME/gcloud.json
+            export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
             helm upgrade realworld ./realworld
