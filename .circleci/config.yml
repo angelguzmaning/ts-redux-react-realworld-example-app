@@ -74,6 +74,7 @@ jobs:
             echo $GCLOUD_SERVICE_KEY > $HOME/gcloud.json
             export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
             gcloud auth print-access-token | helm registry login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev
+            helm package realworld/
             helm push realworld-0.1.0.tgz oci://us-central1-docker.pkg.dev/devops-tools-and-practices/realworld-helm
       - run:
           name: Upgrade helm chart
