@@ -70,6 +70,7 @@ jobs:
       - run:
           name: Package and push Helm chart
           command: |
+            export HELM_EXPERIMENTAL_OCI=1
             echo $GCLOUD_SERVICE_KEY > $HOME/gcloud.json
             export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
             gcloud auth print-access-token | helm registry login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev
