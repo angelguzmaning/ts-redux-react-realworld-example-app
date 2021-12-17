@@ -6,15 +6,14 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   # tag: ""
 
-imagePullSecrets: ["artifact-registry"]
+imagePullSecrets: 
+  - name: "artifact-registry"
 nameOverride: "realworld"
 fullnameOverride: "realworld"
 
 serviceAccount:
   create: true
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
   name: "realworld"
 
 podAnnotations: {}
