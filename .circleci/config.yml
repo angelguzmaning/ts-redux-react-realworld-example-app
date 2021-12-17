@@ -67,11 +67,16 @@ jobs:
       - helm/install-helm-client:
           version: "v3.7.2"
       - configure-artifact-registry
-      - run: 
-          name: Why can k8s not pull? 
+      - run:
+          name: Package and push Helm chart
           command: |
-            gcloud auth list
+            echo $GCLOUD_SERVICE_KEY > $HOME/gcloud.json
+            export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
+            gcloud auth print-access-token | helm registry login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev
+            helm push realworld-0.1.0.tgz oci://us-central1-docker.pkg.dev/devops-tools-and-practices/realworld-helm
       - run:
           name: Upgrade helm chart
           command: |
             helm upgrade --install realworld ./realworld
+            export SERVICE_IP=$(kubectl get svc --namespace default realworld --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
+            echo http://$SERVICE_IP:3000
