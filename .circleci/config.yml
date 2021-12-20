@@ -15,8 +15,8 @@ workflows:
       #      - build-docker-image
       - deploy-helm-chart:
           context: moonwalkers
-          requires:
-            - push-helm-chart
+      #    requires:
+      #      - push-helm-chart
 
 commands:
   prepare-gcp:
