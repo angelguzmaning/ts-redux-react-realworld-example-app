@@ -51,9 +51,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Test
-          command: |
+          name: npm install
+          command: | 
             npm install
+      - run:
+          name: npm test
+          command: |
             npm test
   build-docker-image:
     docker: 
