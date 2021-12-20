@@ -7,12 +7,16 @@ orbs:
 workflows:
   ci-cd:  
     jobs:
-      #- build-docker-image:
-      #    context: moonwalkers
+      - build-docker-image:
+          context: moonwalkers
+      - push-helm-chart:
+          context: moonwalkers
+          requires: 
+            - build-docker-image
       - deploy-helm-chart:
           context: moonwalkers
-          #requires: 
-          #  - build-docker-image
+          requires:
+            - deploy-helm-chart
 
 commands:
   prepare-gcp:
@@ -57,7 +61,7 @@ jobs:
             docker tag ${GCP_REGISTRY_PATH}/realworld-app:${CIRCLE_SHA1} ${GCP_REGISTRY_PATH}/realworld-app:latest
             docker push ${GCP_REGISTRY_PATH}/realworld-app:${CIRCLE_SHA1}
             docker push ${GCP_REGISTRY_PATH}/realworld-app:latest
-  deploy-helm-chart:
+  push-helm-chart:
     docker: 
       - image: cimg/base:2021.11
     steps:
@@ -76,9 +80,17 @@ jobs:
             gcloud auth print-access-token | helm registry login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev
             helm package realworld/
             helm push realworld-0.1.0.tgz oci://us-east1-docker.pkg.dev/devops-practices-and-tools/realworld-helm
+  deploy-helm-chart:
+    docker:
+      - image: cimg/base:2021.11
+    steps:
       - run:
-          name: Upgrade helm chart
+          name: Deploy new helm chart
           command: |
-            helm upgrade --install realworld ./realworld
+            echo $GCLOUD_SERVICE_KEY > $HOME/gcloud.json
+            export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
+            gcloud auth print-access-token | helm registry login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev
+            helm upgrade --install realworld oci://us-east1-docker.pkg.dev/devops-practices-and-tools/realworld-helm/realworld --version 0.1.0
+            sleep 60
             export SERVICE_IP=$(kubectl get svc --namespace default realworld --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
             echo http://$SERVICE_IP:3000
