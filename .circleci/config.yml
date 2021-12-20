@@ -47,7 +47,7 @@ commands:
 jobs:
   test:
     docker: 
-      - image: cimg/base:2021.11
+      - image: cimg/node:17.3.0
     steps:
       - checkout
       - run:
