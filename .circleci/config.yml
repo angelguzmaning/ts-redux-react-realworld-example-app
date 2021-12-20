@@ -67,7 +67,6 @@ jobs:
     steps:
       - checkout
       - prepare-gcp
-      - connect-to-gke-cluster
       - helm/install-helm-client:
           version: "v3.7.2"
       - configure-artifact-registry
@@ -84,6 +83,10 @@ jobs:
     docker:
       - image: cimg/base:2021.11
     steps:
+      - prepare-gcp
+      - connect-to-gke-cluster
+      - helm/install-helm-client:
+          version: "v3.7.2"
       - run:
           name: Deploy new helm chart
           command: |
