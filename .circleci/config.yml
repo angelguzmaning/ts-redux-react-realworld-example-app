@@ -8,14 +8,16 @@ orbs:
 workflows:
   ci-cd:  
     jobs:
+      - test: 
+          context: moonwalkers
       #- build-docker-image:
       #    context: moonwalkers
       #- push-helm-chart:
       #    context: moonwalkers
       #    requires: 
       #      - build-docker-image
-      - deploy-helm-chart:
-          context: moonwalkers
+      #- deploy-helm-chart:
+      #    context: moonwalkers
       #    requires:
       #      - push-helm-chart
 
@@ -43,6 +45,15 @@ commands:
             gcloud container clusters get-credentials gke-ycit021-devops-project --region us-east1
 
 jobs:
+  test:
+    docker: 
+      - image: cimg/base:2021.11
+    steps:
+      - checkout
+      - run:
+          name: Test
+          command: | 
+            npm test
   build-docker-image:
     docker: 
       - image: cimg/base:2021.11
