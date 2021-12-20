@@ -1,0 +1,52 @@
+replicaCount: 1
+
+image:
+  repository: us-east1-docker.pkg.dev/devops-practices-and-tools/realworld/realworld-app
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  # tag: ""
+
+imagePullSecrets: 
+  - name: "artifact-registry"
+nameOverride: "realworld"
+fullnameOverride: "realworld"
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "realworld"
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: LoadBalancer
+  port: 3000
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

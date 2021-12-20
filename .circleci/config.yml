@@ -1,0 +1,84 @@
+version: 2.1
+
+orbs: 
+  gcp-cli: circleci/gcp-cli@2.4.0
+  helm: circleci/helm@1.2.0
+
+workflows:
+  ci-cd:  
+    jobs:
+      #- build-docker-image:
+      #    context: moonwalkers
+      - deploy-helm-chart:
+          context: moonwalkers
+          #requires: 
+          #  - build-docker-image
+
+commands:
+  prepare-gcp:
+    steps:
+      - gcp-cli/install:
+          version: 366.0.0
+      - gcp-cli/initialize:
+          gcloud-service-key: GCLOUD_SERVICE_KEY
+          google-compute-region: GCLOUD_COMPUTE_REGION
+          google-compute-zone: GCLOUD_COMPUTE_ZONE
+          google-project-id: GCLOUD_PROJECT_ID
+  configure-artifact-registry:
+    steps:
+      - run:
+          name: Configure Artifact Registry
+          command: |
+            gcloud auth configure-docker us-east1-docker.pkg.dev
+  connect-to-gke-cluster:
+    steps:
+      - run:
+          name: Connect to GKE cluster
+          command: |
+            gcloud container clusters get-credentials gke-ycit021-devops-project --region us-east1
+
+jobs:
+  build-docker-image:
+    docker: 
+      - image: cimg/base:2021.11
+    steps:
+      - checkout
+      - setup_remote_docker
+      - prepare-gcp
+      - configure-artifact-registry
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t realworld-app .
+      - deploy:
+          name: Tag and Push Docker image
+          command: |
+            docker tag realworld-app ${GCP_REGISTRY_PATH}/realworld-app:${CIRCLE_SHA1}
+            docker tag ${GCP_REGISTRY_PATH}/realworld-app:${CIRCLE_SHA1} ${GCP_REGISTRY_PATH}/realworld-app:latest
+            docker push ${GCP_REGISTRY_PATH}/realworld-app:${CIRCLE_SHA1}
+            docker push ${GCP_REGISTRY_PATH}/realworld-app:latest
+  deploy-helm-chart:
+    docker: 
+      - image: cimg/base:2021.11
+    steps:
+      - checkout
+      - prepare-gcp
+      - connect-to-gke-cluster
+      - helm/install-helm-client:
+          version: "v3.7.2"
+      - configure-artifact-registry
+      - run:
+          name: Package and push Helm chart
+          command: |
+            export HELM_EXPERIMENTAL_OCI=1
+            echo $GCLOUD_SERVICE_KEY > $HOME/gcloud.json
+            export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
+            gcloud auth print-access-token | helm registry login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev
+            helm package realworld/
+            helm push realworld-0.1.0.tgz oci://us-east1-docker.pkg.dev/devops-practices-and-tools/realworld-helm
+      - run:
+          name: Upgrade helm chart
+          command: |
+            helm upgrade --install realworld ./realworld
+            export SERVICE_IP=$(kubectl get svc --namespace default realworld --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
+            echo http://$SERVICE_IP:3000
