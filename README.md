@@ -1,8 +1,5 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/a85b9a22-32b1-479a-a00a-26277493613b/deploy-status)](https://app.netlify.com/sites/react-ts-redux-realworld-example-app/deploys)
-![Pipeline](https://github.com/angelguzmaning/ts-redux-react-realworld-example-app/actions/workflows/pipeline.yml/badge.svg)
-
 # ts-redux-react-realworld-example-app
-React codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec and API.
+React codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) specification and API.
 
 # Getting started (original documentation)
 
@@ -18,7 +15,7 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 1. Build Docker image
     
     ```
-    docker build -t sample:dev .
+    docker build -t react-app:dev .
     ```
     
 2. Run it to see that it works OK 
@@ -31,7 +28,7 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
         -v /node_modules \
         -p 3001:3000 \
         -e CHOKIDAR_USEPOLLING=true \
-        sample:dev
+        react-app:dev
     ```
     
 3. Create a repository called `realworld` in gcloud artifact repository
@@ -44,7 +41,7 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 5. Tag the docker image with that registry
     
     ```bash
-    docker tag sample:dev us-east1-docker.pkg.dev/devops-practices-and-tools/realworld/react-app:dev
+    docker tag react-app:dev us-east1-docker.pkg.dev/devops-practices-and-tools/realworld/react-app:dev
     ```
     
 6. Push the image to the registry
@@ -59,7 +56,7 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
     gcloud auth application-default login
     ```
     
-8. Make sure that you haven't set the `GOOGLE_APPLICATION_CREDENTIALS` in your .rc file. 
+8. Make sure that you haven't mistakenly set extra `GOOGLE_APPLICATION_CREDENTIALS` in your .rc file.
     
     <aside>
     💡 OR YOU'LL BE IN LOTS OF PAIN
@@ -77,12 +74,21 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
     minikube addons enable gcp-auth
     ```
     
-11. Create a new deployment using that docker image
+11. Create a new deployment using that Docker image
     
     ```bash
     kubectl create deployment sonja --image=us-east1-docker.pkg.dev/devops-practices-and-tools/realworld/react-app:dev
     ```
 
+# Using the Helm chart
+1. The gcloud service account needs artifact registry read permissions in the `devops-practices-and-tools` project
+1. Set GOOGLE_APPLICATION_CREDENTIALS to the path to a .json file that contains your credentials
+1. Run the following commands
+    ```
+    export HELM_EXPERIMENTAL_OCI=1
+    gcloud auth print-access-token | helm registry login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev
+    helm upgrade --install realworld oci://us-east1-docker.pkg.dev/devops-practices-and-tools/realworld-helm/realworld --version 0.1.0
+    ```
 
 # Details (original documentation)
 The root of the application is the `src/components/App` component. The App component uses react-router's HashRouter to display the different pages. Each page is represented by a [function component](https://reactjs.org/docs/components-and-props.html). 
