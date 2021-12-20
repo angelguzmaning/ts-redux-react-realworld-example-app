@@ -16,7 +16,7 @@ workflows:
       - deploy-helm-chart:
           context: moonwalkers
           requires:
-            - deploy-helm-chart
+            - push-helm-chart
 
 commands:
   prepare-gcp:
