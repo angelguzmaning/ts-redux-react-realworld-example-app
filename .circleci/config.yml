@@ -3,6 +3,7 @@ version: 2.1
 orbs: 
   gcp-cli: circleci/gcp-cli@2.4.0
   helm: circleci/helm@1.2.0
+  kubernetes: circleci/kubernetes@1.0.2
 
 workflows:
   ci-cd:  
@@ -87,6 +88,7 @@ jobs:
       - connect-to-gke-cluster
       - helm/install-helm-client:
           version: "v3.7.2"
+      - kubernetes/install
       - run:
           name: Deploy new helm chart
           command: |
