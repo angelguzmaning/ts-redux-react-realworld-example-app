@@ -7,12 +7,12 @@ orbs:
 workflows:
   ci-cd:  
     jobs:
-      - build-docker-image:
-          context: moonwalkers
-      - push-helm-chart:
-          context: moonwalkers
-          requires: 
-            - build-docker-image
+      #- build-docker-image:
+      #    context: moonwalkers
+      #- push-helm-chart:
+      #    context: moonwalkers
+      #    requires: 
+      #      - build-docker-image
       - deploy-helm-chart:
           context: moonwalkers
           requires:
