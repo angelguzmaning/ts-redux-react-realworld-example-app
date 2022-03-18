@@ -52,8 +52,9 @@ The page will reload if you make edits.<br />
 Note: This project will run the app even if linting fails.
 
 ### `npm test`
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Requires: NodeJS, Puppeteer, Mocha, and Chai
+#### `npm start` must be run prior to `npm test`
+Runs all E2E scripts (1) under the 'tests' folder.
 
 ### `npm run build`
 
