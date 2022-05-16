@@ -57,7 +57,7 @@ export async function unfavoriteArticle(slug: string): Promise<Article> {
 
 export async function updateSettings(user: UserSettings): Promise<Result<User, GenericErrors>> {
   try {
-    const { data } = await axios.put('user', user);
+    const { data } = await axios.put('user', { user });
 
     return Ok(guard(object({ user: userDecoder }))(data).user);
   } catch ({ data }) {
