@@ -413,6 +413,6 @@ it('Should add comment', async () => {
 
 it('Should delete article', async () => {
   mockedAxios.delete.mockResolvedValueOnce({});
-  await deleteArticle('the slug', 123);
+  await deleteArticle('the slug');
   expect(mockedAxios.delete.mock.calls).toHaveLength(1);
 });
